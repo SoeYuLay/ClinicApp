@@ -242,7 +242,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                                 const SizedBox(width: 5),
                                                 Text(
                                                     DateFormat('d MMM, y')
-                                                        .format(controller.selectedDate.value!),
+                                                        .format(controller.selectedDate.value),
                                                     style: TextStyle(
                                                         color: Colors.grey,
                                                         fontSize: 15)),
@@ -350,11 +350,9 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                                             child:
                                                             DoctorAvailabilityCard(
                                                               doctorAvailability: doctor.doctorAvailability,
-                                                              // initialDate: controller.selectedDate.value ?? DateTime.now(),
-                                                              // initialSlot: controller.selectedSlot.value,
                                                               onSelectionChanged: (date, slot) {
                                                                 controller.selectedDate.value = date;
-                                                                controller.selectedSlot.value = slot!;
+                                                                controller.selectedSlot.value = slot;
                                                               },
                                                             ),
                                                           ),
@@ -385,16 +383,9 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                                                           40)),
                                                                 ),
                                                                 onPressed: () {
-                                                                  if (controller.selectedSlot.value !=
-                                                                      null) {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  } else {
-                                                                    Get.snackbar(
-                                                                        "Error",
-                                                                        "Please select a date and time slot");
-                                                                  }
-                                                                },
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                                                                                },
                                                                 child: const Text(
                                                                     'Make Appointment',
                                                                     style: TextStyle(
@@ -634,16 +625,10 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                       ),
                       onPressed: () {
-                        if (controller.selectedSlot.value != null) {
-                          Get.to(() => AppointmentSuccessScreen(
-                            doctor: doctor,
-                            selectedDate: controller.selectedDate.value!,
-                            selectedSlot: controller.selectedSlot.value!,
-                          ));
-                        } else {
-                          Get.snackbar("Error", "Please select a date and time slot");
-                        }
-                      },
+                        Get.to(() => AppointmentSuccessScreen(
+                          doctorID: doctor.doctorID,
+                        ));
+                                            },
                       child: const Text('Book Now', style: TextStyle(fontSize: 18)),
                     ),
                   ),
