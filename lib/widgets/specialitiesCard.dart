@@ -68,9 +68,9 @@ class SpecialitiesCard extends StatelessWidget {
               crossAxisSpacing: 10,
               childAspectRatio: 0.8
           ),
-          itemCount: controller.specialities.length,
+          itemCount: controller.specialitiesHomePage.length,
           itemBuilder: (context,index){
-            final speciality = controller.specialities[index];
+            final speciality = controller.specialitiesHomePage[index];
             return buttons(speciality.specialitiesImage, speciality.specialitiesName);
           });
     }

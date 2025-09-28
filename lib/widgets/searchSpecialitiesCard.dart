@@ -15,7 +15,7 @@ class SearchSpecialitiesCard extends StatelessWidget {
       if (controller.isLoading.value) {
         return Center(child: CircularProgressIndicator());
       }
-      if (controller.specialities.isEmpty) {
+      if (controller.allSpecialities.isEmpty) {
         return Center(child: Text('No specialities found'));
       }
 
@@ -27,9 +27,9 @@ class SearchSpecialitiesCard extends StatelessWidget {
             childAspectRatio: 3,
             crossAxisSpacing: 10,
             mainAxisSpacing: 10),
-        itemCount: controller.specialities.length,
+        itemCount: controller.allSpecialities.length,
         itemBuilder: (context, index) {
-          final speciality = controller.specialities[index];
+          final speciality = controller.allSpecialities[index];
           return buttons(speciality.specialitiesImage, speciality.specialitiesName);
         },
       );

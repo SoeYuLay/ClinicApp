@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 
 class SpecialitiesController extends GetxController {
   var isLoading = false.obs;
-  var specialities = <SpecialitiesModel>[].obs;
+  var specialitiesHomePage = <SpecialitiesModel>[].obs;
+  var allSpecialities = <SpecialitiesModel>[].obs;
 
   Future<void> fetchSpecialities({required bool isHomePage}) async {
     isLoading.value = true;
     final result = await SpecialitiesServices.specialities(isHomePage: isHomePage);
-    specialities.assignAll(result);
+    isHomePage ? specialitiesHomePage.assignAll(result) : allSpecialities.assignAll(result);
     isLoading.value = false;
   }
 }
