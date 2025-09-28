@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_clinic_app/controllers/appointmentController.dart';
 import 'package:flutter_clinic_app/controllers/doctorController.dart';
 import 'package:flutter_clinic_app/screens/appointmentSuccess_screen.dart';
 import 'package:flutter_clinic_app/widgets/doctorAvailabilityCard.dart';
@@ -25,6 +26,10 @@ class BookAppointmentScreen extends StatefulWidget {
 
 class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   final DoctorController controller = Get.put(DoctorController());
+  final AppointmentController appointmentController = Get.put(AppointmentController());
+  final phoneNumberController = TextEditingController();
+  final noteController = TextEditingController();
+  final patientNameController = TextEditingController();
 
   @override
   void initState() {
@@ -139,44 +144,6 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                   ),
                   const SizedBox(height: 10),
 
-                  // Appointment Details
-                  // Card(
-                  //   color: Colors.white,
-                  //   elevation: 0,
-                  //   child: Padding(
-                  //     padding: const EdgeInsets.all(15.0),
-                  //     child: Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  //         const Text('Detail appointment', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  //         const SizedBox(height: 10),
-                  //         Obx(() {
-                  //           return DoctorAvailabilityCard(
-                  //             doctorAvailability: doctor.doctorAvailability,
-                  //             initialDate: controller.selectedDate.value ?? DateTime.now(),
-                  //             initialSlot: controller.selectedSlot.value,
-                  //             onSelectionChanged: (date, slot) {
-                  //               controller.selectedDate.value = date;
-                  //               controller.selectedSlot.value = slot;
-                  //             },
-                  //           );
-                  //         }),
-                  //         const SizedBox(height: 10),
-                  //         Text('Note', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                  //         const SizedBox(height: 10),
-                  //         Obx(() {
-                  //           return TextField(
-                  //             controller: controller.noteController.value,
-                  //             decoration: InputDecoration(
-                  //               hintText: 'Add note for doctor',
-                  //               border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-                  //             ),
-                  //           );
-                  //         }),
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
                   Card(
                     color: Colors.white,
                     elevation: 0,
@@ -258,7 +225,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                                 ),
                                                 const SizedBox(width: 5),
                                                 Text(
-                                                    controller.selectedSlot.value ??
+                                                    controller.selectedSlotLabel.value ??
                                                         "Select a slot",
                                                     style: TextStyle(
                                                         color: Colors.grey,
@@ -350,9 +317,10 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                                             child:
                                                             DoctorAvailabilityCard(
                                                               doctorAvailability: doctor.doctorAvailability,
-                                                              onSelectionChanged: (date, slot) {
+                                                              onSelectionChanged: (date, slotKey, slotLabel) {
                                                                 controller.selectedDate.value = date;
-                                                                controller.selectedSlot.value = slot;
+                                                                controller.selectedSlotKey.value = slotKey;
+                                                                controller.selectedSlotLabel.value = slotLabel;
                                                               },
                                                             ),
                                                           ),
@@ -416,7 +384,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     ),
                                     const SizedBox(height: 10),
                                     TextField(
-                                      controller: controller.noteController.value,
+                                      controller: noteController,
                                       keyboardType: TextInputType.text,
                                       decoration: InputDecoration(
                                         hintText: 'Add note for doctor',
@@ -508,7 +476,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                             const SizedBox(height: 10),
 
                             TextField(
-                              controller: controller.patientNameController.value,
+                              controller: patientNameController,
                               keyboardType: TextInputType.text,
                               decoration: InputDecoration(
                                 hintText: 'Enter Patient\'s Full Name',
@@ -537,6 +505,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                             ),
                             const SizedBox(height: 10),
                             IntlPhoneField(
+                              controller: phoneNumberController,
                               decoration: InputDecoration(
                                 labelText: 'Phone Number',
                                 border: OutlineInputBorder(
@@ -562,6 +531,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     .digitsOnly, // allow only numbers
                               ],
                               onChanged: (phone) {
+
                                 // print(phone.completeNumber);
                               },
                             ),
@@ -624,11 +594,69 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                         foregroundColor: AppColor.bgColor,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                       ),
-                      onPressed: () {
-                        Get.to(() => AppointmentSuccessScreen(
-                          doctorID: doctor.doctorID,
-                        ));
-                                            },
+                      // onPressed: () {
+                      //   print('doctorID: ${doctor.doctorID},');
+                      //   print('appointmentDate: ${controller.selectedDate.value.toString()},');
+                      //   print('appointmentSlot: ${controller.selectedSlotKey.value}');
+                      //   print('appointmentNote: ${noteController.text},');
+                      //   print('appointmentFor: ${controller.patientSelection[0] ? 'SELF' : 'OTHER'}');
+                      //   print('phoneNumber: ${phoneNumberController.text}, ');
+                      //   print('newPatient: ${controller.newPatientCheck.value}');
+                      //   print('PatientName: ${controller.patientSelection[0] ? null : patientNameController.text}');
+                      //   // bookingController.makeAppointment(
+                      //       doctorID: doctor.doctorID,
+                      //       appointmentDate: controller.selectedDate.value.toString(),
+                      //       appointmentSlot: controller.selectedSlotKey.value,
+                      //       appointmentNote: noteController.text,
+                      //       appointmentFor: controller.patientSelection[0] ? 'SELF' : 'OTHER',
+                      //       phoneNumber: phoneNumberController.text
+                      //       newPatient: controller.newPatientCheck.value,
+                      //       patientName: controller.patientSelection[0] ? null : patientNameController.text
+                      //   //     );
+                      //   Get.to(() => AppointmentSuccessScreen(
+                      //     doctorID: doctor.doctorID,
+                      //   ));
+                      //                       },
+                      onPressed: appointmentController.isLoading.value
+                          ? null
+                          : () async {
+                        print('doctorId: ${doctor.doctorID},');
+                        print('appointmentDate: ${controller.selectedDate.value.toString()},');
+                        print('appointmentSlot: ${controller.selectedSlotKey.value}');
+                        print('appointmentNote: ${noteController.text},');
+                        print('appointmentFor: ${controller.patientSelection[0] ? 'SELF' : 'OTHER'}');
+                        print('phoneNumber: ${phoneNumberController.text}, ');
+                        print('newPatient: ${controller.newPatientCheck.value}');
+                        print('PatientName: ${controller.patientSelection[0] ? null : patientNameController.text}');
+                        final result =
+                        await appointmentController.makeAppointment(
+                            doctorID: doctor.doctorID,
+                            appointmentDate: controller.selectedDate.value.toString(),
+                            appointmentSlot: controller.selectedSlotKey.value,
+                            appointmentNote: noteController.text,
+                            appointmentFor: controller.patientSelection[0] ? 'SELF' : 'OTHER',
+                            phoneNumber: phoneNumberController.text,
+                            newPatient: controller.newPatientCheck.value,
+                            patientName: controller.patientSelection[0] ? '' : patientNameController.text
+                        );
+
+                        final body = result['body'];
+                        final appointmentData = body['data'];
+
+                        if (body['success']) {
+                          Get.to(() => AppointmentSuccessScreen(
+                            doctorID: doctor.doctorID,
+                            appointmentData: appointmentData,
+                          ));
+                        } else {
+
+                          Get.snackbar(
+                            'Error',
+                            body['message'] ??
+                                'Make Appointment failed',
+                          );
+                        }
+                      },
                       child: const Text('Book Now', style: TextStyle(fontSize: 18)),
                     ),
                   ),

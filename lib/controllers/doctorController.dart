@@ -21,18 +21,20 @@ class DoctorController extends GetxController {
 
   // Booking selections
   Rx<DateTime> selectedDate = DateTime.now().obs;
-  RxString selectedSlot = ''.obs;
+  RxString selectedSlotKey = ''.obs;
+  RxString selectedSlotLabel = ''.obs;
 
   var patientSelection = <bool>[true, false].obs;
   var newPatientCheck = false.obs;
-  var patientNameController = Rx<TextEditingController?>(null);
-  var noteController = Rx<TextEditingController?>(null);
+  // var patientNameController = Rx<TextEditingController?>(null);
+  // var noteController = Rx<TextEditingController?>(null);
 
 
   Future<void> fetchDoctors({required bool isHomePage}) async {
     isLoading.value = true;
     errorMessage.value = '';
     accessToken = await AuthService().getToken();
+    print(accessToken);
 
     try {
       final result = await DoctorServices.fetchDoctorData(
@@ -43,6 +45,8 @@ class DoctorController extends GetxController {
       );
 
       if(isHomePage){
+        print(doctorsHomePage);
+
         doctorsHomePage.assignAll(result);
       }else{
         if (page == 1) {
@@ -71,8 +75,6 @@ class DoctorController extends GetxController {
 
       doctor.value = result;
 
-      patientNameController.value ??= TextEditingController();
-      noteController.value ??= TextEditingController();
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {

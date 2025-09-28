@@ -87,13 +87,6 @@ class RegisterController extends GetxController{
 
     final statusCode = result['statusCode'];
     final body = result['body'];
-    print("Token: $token");
-    print("FirstName: $firstName");
-    print("LastName: $lastName");
-    print("DOB: $dob");
-    print("Address: $address");
-    print("gender: $gender");
-    print("profilePic: $profilePic");
 
     if (statusCode == 200 || statusCode == 201 && body['success'] == true) {
       return result;

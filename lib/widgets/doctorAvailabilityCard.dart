@@ -8,18 +8,15 @@ import 'package:get/get.dart';
 import '../controllers/doctorController.dart';
 
 class DoctorAvailabilityCard extends StatefulWidget {
-  const DoctorAvailabilityCard(
-      {super.key,
-      required this.doctorAvailability,
-      required this.onSelectionChanged,
-      // this.initialDate,
-      // this.initialSlot
-      });
-  // final DateTime? initialDate;
-  // final String? initialSlot;
-  final List<DoctorAvailabilityModel> doctorAvailability;
-  final Function(DateTime date, String slot) onSelectionChanged;
+  const DoctorAvailabilityCard({
+    super.key,
+    required this.doctorAvailability,
+    required this.onSelectionChanged,
+  });
 
+  final List<DoctorAvailabilityModel> doctorAvailability;
+  final Function(DateTime date, String slotKey, String slotLabel)
+      onSelectionChanged;
 
   @override
   State<DoctorAvailabilityCard> createState() => _DoctorAvailabilityCardState();
@@ -49,27 +46,6 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
     "09:00 PM"
   ];
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   final todayIndex = selectedDate.day - 1;
-    //   const itemWidth = 72.0;
-    //   final offset = todayIndex * itemWidth;
-    //
-    //   if (_scrollController.hasClients) {
-    //     _scrollController.jumpTo(offset);
-    //   }
-    // });
-    //
-    // if (widget.initialDate != null && widget.initialSlot != null) {
-    //   selectedDate = widget.initialDate!;
-    //   selectedSlot = widget.initialSlot;
-    // }
-  }
-
   DateTime getSlotDateTime(String slot, DateTime date) {
     final format = DateFormat("hh:mm a");
     final time = format.parseLoose(slot);
@@ -77,35 +53,49 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
   }
 
   Widget buildSlotSection(
-      String title, List<String> slots, List<String> availableSlots) {
+    String title,
+    List<String> sectionSlots,
+    List<Map<String, String>> availableSlots,
+  ) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(title,
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 18)),
+      Text(title, style: TextStyle(color: Colors.grey.shade600, fontSize: 18)),
       Wrap(
         spacing: 8,
-        children: slots.map((slot) {
+        children: sectionSlots.map((slotLabel) {
           final now = DateTime.now();
           final isToday = controller.selectedDate.value.year == now.year &&
               controller.selectedDate.value.month == now.month &&
               controller.selectedDate.value.day == now.day;
 
-          final slotTime = getSlotDateTime(slot, controller.selectedDate.value);
+          final slotTime =
+              getSlotDateTime(slotLabel, controller.selectedDate.value);
 
-          final isAvailable = availableSlots.contains(slot) &&
-              ((isToday ? slotTime.isAfter(now) : true));
+// find matching slot (with key+label) from API
+          final matchedSlot = availableSlots.firstWhere(
+            (s) => s['label'] == slotLabel,
+            orElse: () => {},
+          );
 
-          final isSelected = controller.selectedSlot.value == slot;
+          final isAvailable = matchedSlot.isNotEmpty &&
+              (isToday ? slotTime.isAfter(now) : true);
+
+          final isSelected = controller.selectedSlotLabel.value == slotLabel;
 
           return GestureDetector(
             onTap: isAvailable
                 ? () {
-                controller.selectedSlot.value = slot;
-                widget.onSelectionChanged(controller.selectedDate.value, controller.selectedSlot.value);
+                    controller.selectedSlotKey.value = matchedSlot['key']!;
+                    controller.selectedSlotLabel.value = slotLabel;
 
+                    widget.onSelectionChanged(
+                      controller.selectedDate.value,
+                      controller.selectedSlotKey.value,
+                      controller.selectedSlotLabel.value,
+                    );
                   }
                 : null,
             child: ChipCard(
-              labelText: slot,
+              labelText: slotLabel,
               fontsize: 15,
               circularSize: 8,
               isAvailable: isAvailable,
@@ -114,40 +104,42 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
           );
         }).toList(),
       ),
-      const SizedBox(
-        height: 10,
-      )
+      const SizedBox(height: 10),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx((){
-      final daysInMonth =
-          DateTime(controller.selectedDate.value.year, controller.selectedDate.value.month + 1, 0).day;
-      final selectedDay = DateFormat('EEE').format(controller.selectedDate.value).toUpperCase();
-      // final availableSlots = widget.doctorAvailability
-      //         .where((d) => d.key == selectedDay)
-      //         .expand((d) => d.timeslot)
-      //         .map((t) => t.slotLabel)
-      //         .toSet()
-      //         .toList() ??
-      //     [];
+    return Obx(() {
+      final daysInMonth = DateTime(controller.selectedDate.value.year,
+              controller.selectedDate.value.month + 1, 0)
+          .day;
+      final selectedDay =
+          DateFormat('EEE').format(controller.selectedDate.value).toUpperCase();
+
+// available slots with key+label
       final availableSlots = widget.doctorAvailability
           .where((d) => d.key == selectedDay)
           .expand((d) {
         return d.timeslot.map((s) {
           final parsed = DateFormat("h:mm a").parseLoose(s.slotLabel);
-          return DateFormat("hh:mm a").format(parsed);
+          final formatted = DateFormat("hh:mm a").format(parsed);
+          return {
+            "key": s.slotKey, // API key
+            "label": formatted, // formatted label
+          };
         });
-      }).toSet().toList();
+      }).toList();
+
       return Container(
         decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.grey.shade300)),
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
         child: Column(
           children: [
+            /// Month Navigation
             Container(
               decoration: BoxDecoration(
                   color: Colors.grey.shade100,
@@ -160,27 +152,30 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
                     GestureDetector(
                         onTap: () {
                           controller.selectedDate.value = DateTime(
-                              controller.selectedDate.value.year, controller.selectedDate.value.month - 1, 1);
+                              controller.selectedDate.value.year,
+                              controller.selectedDate.value.month - 1,
+                              1);
                         },
                         child: Icon(Iconsax.arrow_left_3, size: 30)),
                     Text(
                       DateFormat.yMMMM().format(controller.selectedDate.value),
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     GestureDetector(
                         onTap: () {
                           controller.selectedDate.value = DateTime(
-                              controller.selectedDate.value.year, controller.selectedDate.value.month + 1, 1);
+                              controller.selectedDate.value.year,
+                              controller.selectedDate.value.month + 1,
+                              1);
                         },
-                        child: Icon(
-                          Iconsax.arrow_right_2,
-                          size: 30,
-                        )),
+                        child: Icon(Iconsax.arrow_right_2, size: 30)),
                   ],
                 ),
               ),
             ),
 
+            /// Days List
             Container(
               height: 90,
               decoration: BoxDecoration(
@@ -191,34 +186,41 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
                 scrollDirection: Axis.horizontal,
                 itemCount: daysInMonth,
                 itemBuilder: (context, index) {
-                  final firstDayOfMonth =
-                  DateTime(controller.selectedDate.value.year, controller.selectedDate.value.month, 1);
+                  final firstDayOfMonth = DateTime(
+                      controller.selectedDate.value.year,
+                      controller.selectedDate.value.month,
+                      1);
                   final date = firstDayOfMonth.add(Duration(days: index));
 
                   final now = DateTime.now();
                   final today = DateTime(now.year, now.month, now.day);
 
-                  //Skip past dates
                   if (date.isBefore(today)) {
                     return const SizedBox.shrink();
                   }
 
-                  final isSelected = date.day == controller.selectedDate.value.day &&
-                      date.month == controller.selectedDate.value.month &&
-                      date.year == controller.selectedDate.value.year;
+                  final isSelected =
+                      date.day == controller.selectedDate.value.day &&
+                          date.month == controller.selectedDate.value.month &&
+                          date.year == controller.selectedDate.value.year;
 
                   return GestureDetector(
                     onTap: () {
                       setState(() {
                         controller.selectedDate.value = date;
-                        controller.selectedSlot.value = '';
-                        widget.onSelectionChanged(controller.selectedDate.value, controller.selectedSlot.value);
+                        controller.selectedSlotKey.value = '';
+                        controller.selectedSlotLabel.value = '';
+                        widget.onSelectionChanged(
+                          controller.selectedDate.value,
+                          '',
+                          '',
+                        );
                       });
                     },
                     child: Container(
                       width: 60,
-                      margin:
-                      const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 8),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
                         border: Border.all(
@@ -227,7 +229,7 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
                               : Colors.grey.shade500,
                         ),
                         color:
-                        isSelected ? const Color(0xFFEBEEFA) : Colors.white,
+                            isSelected ? const Color(0xFFEBEEFA) : Colors.white,
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
@@ -255,21 +257,21 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
               ),
             ),
 
+            /// Slots
             Padding(
-                padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildSlotSection('Morning', morningSlots,availableSlots),
-                    buildSlotSection('Afternoon', afternoonSlots,availableSlots),
-                    buildSlotSection('Evening', eveningSlots,availableSlots),
-                  ],
-                )
-            )
+              padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildSlotSection('Morning', morningSlots, availableSlots),
+                  buildSlotSection('Afternoon', afternoonSlots, availableSlots),
+                  buildSlotSection('Evening', eveningSlots, availableSlots),
+                ],
+              ),
+            ),
           ],
         ),
       );
-    }
-    );
+    });
   }
 }

@@ -7,9 +7,10 @@ import '../controllers/doctorController.dart';
 import '../utils/constants/app_colors.dart';
 
 class AppointmentSuccessScreen extends StatefulWidget {
-  const AppointmentSuccessScreen({super.key, required this.doctorID});
+  const AppointmentSuccessScreen({super.key, required this.doctorID, required this.appointmentData});
 
   final String doctorID;
+  final Map<String, dynamic>? appointmentData;
 
   @override
   State<AppointmentSuccessScreen> createState() => _AppointmentSuccessScreenState();
@@ -22,6 +23,7 @@ class _AppointmentSuccessScreenState extends State<AppointmentSuccessScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    print(widget.appointmentData);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchDoctorByID(widget.doctorID);
     });
@@ -41,7 +43,7 @@ class _AppointmentSuccessScreenState extends State<AppointmentSuccessScreen> {
             return Center(child: Text('Error: ${controller.errorMessage.value}'));
           }
           final doctor = controller.doctor.value;
-          if (doctor == null) return const Center(child: Text('No doctor found'));
+          if (doctor == null) return const Center(child: Text('No appointment data found'));
 
           return SingleChildScrollView(
             child: Padding(
@@ -142,7 +144,7 @@ class _AppointmentSuccessScreenState extends State<AppointmentSuccessScreen> {
                                                   color: Colors.grey,fontWeight: FontWeight.bold,
                                                   fontSize: 15)),
                                           const SizedBox(width: 10),
-                                          Text('●  ${controller.selectedSlot.value}',
+                                          Text('●  ${controller.selectedSlotLabel.value}',
                                               style: TextStyle(
                                                   color: Colors.grey,fontWeight: FontWeight.bold, fontSize: 15)),
                                         ],

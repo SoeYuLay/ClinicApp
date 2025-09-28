@@ -447,9 +447,10 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                     padding: const EdgeInsets.all(16.0),
                     child: DoctorAvailabilityCard(
                       doctorAvailability: doctor.doctorAvailability,
-                      onSelectionChanged: (date, slot) {
+                      onSelectionChanged: (date, slotKey, slotLabel) {
                         controller.selectedDate.value = date;
-                        controller.selectedSlot.value = slot!;
+                        controller.selectedSlotKey.value = slotKey;
+                        controller.selectedSlotLabel.value = slotLabel;
                       },
                     ),
                   ),
@@ -470,7 +471,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                             borderRadius: BorderRadius.circular(40)),
                       ),
                       onPressed: () {
-                        if (controller.selectedDate.value != null && controller.selectedSlot.value  != null) {
+                        if (controller.selectedDate.value != null && controller.selectedSlotLabel.value  != null) {
                           Get.to(() => BookAppointmentScreen(
                             doctorID: widget.doctorID,
                             // selectedDate: selectedDate!,
