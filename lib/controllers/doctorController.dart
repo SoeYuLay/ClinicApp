@@ -1,24 +1,32 @@
 import 'package:flutter_clinic_app/api/auth_services.dart';
 import 'package:flutter_clinic_app/api/doctor_services.dart';
 import 'package:flutter_clinic_app/models/doctor.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class DoctorController extends GetxController{
-  // static String accessToken = '';
-  static String accessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QzOUBnbWFpbC5jb20iLCJzdWIiOiJjbWczNjJycnowMDAwcDgwdzAzdHp1MW5vIiwiaWF0IjoxNzU5MDMxNzQ3LCJleHAiOjE3NTkwNzE3NDd9.gQO0KeLWTTk9ozmmybVsuff9QE8tWrIJ1X40D7j3rBk';
+class DoctorController extends GetxController {
+  static String accessToken = '';
 
-  //For Obx
   var isLoading = false.obs;
   var errorMessage = ''.obs;
+
   var doctors = <Doctor>[].obs;
   var doctor = Rxn<Doctor>();
+
+  // Pagination
   var page = 1;
   final int pageSize = 5;
   var hasMore = true.obs;
 
-  var newPatientCheck = false.obs;
+  // Booking selections
+  var selectedDate = Rxn<DateTime>();
+  var selectedSlot = RxString('');
 
-  // Fetch all doctors
+  var patientSelection = <bool>[true, false].obs;
+  var newPatientCheck = false.obs;
+  var patientNameController = Rx<TextEditingController?>(null);
+  var noteController = Rx<TextEditingController?>(null);
+
   Future<void> fetchDoctors({required bool isHomePage}) async {
     isLoading.value = true;
     errorMessage.value = '';
@@ -32,78 +40,124 @@ class DoctorController extends GetxController{
         pageSize: pageSize,
       );
 
-      doctors.assignAll(result);
+      if (page == 1) {
+        doctors.assignAll(result);
+      } else {
+        doctors.addAll(result);
+      }
+
       hasMore.value = result.length >= pageSize;
     } catch (e) {
       errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
     }
-
-    isLoading.value = false;
   }
 
-  // Fetch single doctor by ID
   Future<void> fetchDoctorByID(String doctorID) async {
     isLoading.value = true;
     errorMessage.value = '';
+    try {
+      final result = await DoctorServices.fetchDoctorDataByID(
+        accessToken: accessToken,
+        doctorID: doctorID,
+      );
 
-    final result = await DoctorServices.fetchDoctorDataByID(
-      accessToken: accessToken,
-      doctorID: doctorID,
-    );
-    doctor.value = result;
+      doctor.value = result;
 
-    isLoading.value = false;
+      selectedDate.value ??= DateTime.now();
+      selectedSlot.value = selectedSlot.value.isEmpty
+          ? result.doctorAvailability.isNotEmpty
+          ? result.doctorAvailability.first.timeslot.first.slotLabel
+          : ''
+          : selectedSlot.value;
+
+      patientNameController.value ??= TextEditingController();
+      noteController.value ??= TextEditingController();
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  //For Future Builder
-  // Future<List<Doctor>> fetchDoctorsHomePage({required bool isHomePage}) async {
-  //   try {
-  //     final response = await DoctorServices.fetchDoctorData(token: accessToken, isHomePage: isHomePage);
-  //
-  //     return response;
-  //   } catch (e) {
-  //     throw Exception("Failed to fetch doctors: $e");
-  //   }
-  // }
-  //
-  // Future<List<Doctor>> fetchAllDoctors({
-  //   required bool isHomePage,
-  // }) async {
-  //   final result = await DoctorServices.fetchDoctorData(
-  //     token: accessToken,
-  //     isHomePage: isHomePage,
-  //     page: page,
-  //     pageSize: pageSize,
-  //   );
-  //
-  //   hasMore.value = result.length == pageSize;
-  //
-  //   // Append new doctors
-  //   if (page == 1) {
-  //     doctors.value = result; // reset on first page
-  //   } else {
-  //     doctors.addAll(result);
-  //   }
-  //
-  //   return doctors;
-  // }
-  //
-  // void loadMore(bool isHomePage) {
-  //   if (!hasMore.value) return;
-  //   page++;
-  //   fetchAllDoctors(isHomePage: isHomePage);
-  // }
-  //
-  // void resetAndFetch(bool isHomePage) {
-  //   page= 1;
-  //   hasMore.value = true;
-  //   fetchAllDoctors(isHomePage: isHomePage);
-  // }
-  //
-  //
-  // Future<Doctor> fetchDoctorByID(String doctorID) async {
-  //   await Future.delayed(Duration(seconds: 1));
-  //   final doctors = await DoctorServices.fetchDoctorDataByID(accessToken: accessToken, doctorID: doctorID);
-  //   return doctors;
-  // }
+  void updatePatientSelection(int index) {
+    for (int i = 0; i < patientSelection.length; i++) {
+      patientSelection[i] = i == index;
+    }
+  }
+
+  void loadMoreDoctors({required bool isHomePage}) {
+    if (!hasMore.value) return;
+    page++;
+    fetchDoctors(isHomePage: isHomePage);
+  }
+
+  void resetDoctors({required bool isHomePage}) {
+    page = 1;
+    hasMore.value = true;
+    fetchDoctors(isHomePage: isHomePage);
+  }
+
+  void clearBookingSelections() {
+    selectedDate.value = null;
+    selectedSlot.value = '';
+    patientSelection.assignAll([true, false]);
+    newPatientCheck.value = false;
+    patientNameController.value?.clear();
+    noteController.value?.clear();
+  }
 }
+
+
+//For Future Builder
+// Future<List<Doctor>> fetchDoctorsHomePage({required bool isHomePage}) async {
+//   try {
+//     final response = await DoctorServices.fetchDoctorData(token: accessToken, isHomePage: isHomePage);
+//
+//     return response;
+//   } catch (e) {
+//     throw Exception("Failed to fetch doctors: $e");
+//   }
+// }
+//
+// Future<List<Doctor>> fetchAllDoctors({
+//   required bool isHomePage,
+// }) async {
+//   final result = await DoctorServices.fetchDoctorData(
+//     token: accessToken,
+//     isHomePage: isHomePage,
+//     page: page,
+//     pageSize: pageSize,
+//   );
+//
+//   hasMore.value = result.length == pageSize;
+//
+//   // Append new doctors
+//   if (page == 1) {
+//     doctors.value = result; // reset on first page
+//   } else {
+//     doctors.addAll(result);
+//   }
+//
+//   return doctors;
+// }
+//
+// void loadMore(bool isHomePage) {
+//   if (!hasMore.value) return;
+//   page++;
+//   fetchAllDoctors(isHomePage: isHomePage);
+// }
+//
+// void resetAndFetch(bool isHomePage) {
+//   page= 1;
+//   hasMore.value = true;
+//   fetchAllDoctors(isHomePage: isHomePage);
+// }
+//
+//
+// Future<Doctor> fetchDoctorByID(String doctorID) async {
+//   await Future.delayed(Duration(seconds: 1));
+//   final doctors = await DoctorServices.fetchDoctorDataByID(accessToken: accessToken, doctorID: doctorID);
+//   return doctors;
+// }
