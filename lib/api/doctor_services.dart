@@ -14,8 +14,8 @@ class DoctorServices {
     try {
       final url = isHomePage
           ? Uri.parse("$baseUrl/doctors?isHomePage=true")
-          : Uri.parse("$baseUrl/doctors?page=$page&pageSize=$pageSize");
-          // : Uri.parse("$baseUrl/doctors");
+          // : Uri.parse("$baseUrl/doctors?page=$page&pageSize=$pageSize");
+          : Uri.parse("$baseUrl/doctors");
       final response = await http.get(
           url,
           headers: {
