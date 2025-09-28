@@ -7,6 +7,7 @@ class Doctor{
   final String doctorImage;
   final double doctorRating;
   final int doctorReviews;
+  final String doctorAbout;
   final List<DoctorAvailabilityModel> doctorAvailability;
   final int doctorExperience;
 
@@ -17,6 +18,7 @@ class Doctor{
     required this.doctorImage,
     required this.doctorRating,
     required this.doctorReviews,
+    required this.doctorAbout,
     required this.doctorAvailability,
     required this.doctorExperience,
 } );
@@ -43,6 +45,7 @@ class Doctor{
         doctorImage: json['profilePicUrl'] ?? '',
         doctorRating: (json['overallRating'] ?? 0).toDouble(),
         doctorReviews: json['reviews'] ?? 0,
+        doctorAbout: json['about'] ?? '',
         doctorAvailability: availability,
         doctorExperience: json['experience'] ?? 0);
   }

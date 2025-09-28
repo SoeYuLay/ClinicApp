@@ -42,7 +42,7 @@ class DoctorController extends GetxController{
   }
 
   // Fetch single doctor by ID
-  Future<void> fetchDoctorByIDs(String doctorID) async {
+  Future<void> fetchDoctorByID(String doctorID) async {
     isLoading.value = true;
     errorMessage.value = '';
 
