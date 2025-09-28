@@ -44,6 +44,7 @@ dependencies:
   toggle_switch: ^2.3.0
   flutter_secure_storage: ^9.2.4
   image_picker: ^1.2.0
+  webview_flutter: ^4.13.0
 
 dev_dependencies:
   flutter_test:
