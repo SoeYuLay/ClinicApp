@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_clinic_app/api/auth_services.dart';
-import 'package:flutter_clinic_app/screens/successCreateAcc_screen.dart';
 import 'package:get/get.dart';
 
 class RegisterController extends GetxController{

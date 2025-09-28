@@ -50,15 +50,15 @@ class SpecialitiesCard extends StatelessWidget {
     controller.fetchSpecialities(isHomePage: true);
 
     return Obx((){
-      if(controller.isLoading.value){
-        return Center(child: CircularProgressIndicator());
-      }
-      if (controller.errorMessage.isNotEmpty) {
-        return Center(child: Text("Error: ${controller.errorMessage}"));
-      }
-      if (controller.specialities.isEmpty) {
-        return Center(child: Text("No data found"));
-      }
+      // if(controller.isLoading.value){
+      //   return Center(child: CircularProgressIndicator());
+      // }
+      // if (controller.errorMessage.isNotEmpty) {
+      //   return Center(child: Text("Error: ${controller.errorMessage}"));
+      // }
+      // if (controller.specialities.isEmpty) {
+      //   return Center(child: Text("No data found"));
+      // }
       return GridView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
