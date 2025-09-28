@@ -5,90 +5,39 @@ import 'package:flutter_clinic_app/widgets/chipCard.dart';
 import 'package:get/get.dart';
 import 'package:flutter_clinic_app/models/doctor.dart';
 
-class BestDoctorCard extends StatefulWidget {
-  BestDoctorCard({super.key, this.speciality, required this.isHomePage});
-  final String? speciality;
+class BestDoctorCard extends StatelessWidget {
   final bool isHomePage;
+  final DoctorController controller = Get.put(DoctorController());
 
-  @override
-  State<BestDoctorCard> createState() => _BestDoctorCardState();
-}
-
-class _BestDoctorCardState extends State<BestDoctorCard> {
-  final controller = Get.put(DoctorController());
-  late Future<List<Doctor>> futureDoctors;
-  late ScrollController _scrollController;
-  List<Doctor> allDoctors = [];
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    futureDoctors = widget.isHomePage ? controller.fetchDoctorsHomePage(isHomePage: true) : controller.fetchAllDoctors(isHomePage: false);
-
-    _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels >=
-          _scrollController.position.maxScrollExtent - 100 &&
-          controller.hasMore.value) {
-        // load more
-        setState(() {
-          controller.page++;
-          futureDoctors =
-              controller.fetchAllDoctors(isHomePage: widget.isHomePage);
-        });
-      }
+  BestDoctorCard({Key? key, required this.isHomePage}) : super(key: key) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchDoctors(isHomePage: isHomePage);
     });
   }
 
   @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Doctor>>(
-      future: futureDoctors,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          print(snapshot.error);
-          return Center(child: Text("Error: ${snapshot.error}"));
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return const Center(child: Text("No doctors available"));
-        }
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return Center(child: CircularProgressIndicator());
+      }
 
-        final doctorList = widget.speciality == null
-            ? snapshot.data!
-            : snapshot.data!
-            .where((doc) => doc.doctorSpeciality == widget.speciality)
-            .toList();
+      if (controller.doctors.isEmpty) {
+        return Center(child: Text('No doctors found'));
+      }
 
-        return ListView.separated(
-          controller: _scrollController,
-          itemCount: widget.isHomePage ? doctorList.length : doctorList.length + (controller.hasMore.value ? 1 : 0),
-          // itemCount: doctorList.length,
+      return ListView.separated(
+          itemCount: controller.doctors.length,
             shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           separatorBuilder: (BuildContext context, int index) =>
           const SizedBox(height: 10),
             itemBuilder: (context, index) {
-              // Show loading indicator at the end
-              if (index == doctorList.length) {
-                return const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-
-              final doctor = doctorList[index]; // safe now
+              final doctor = controller.doctors[index];
 
               return InkWell(
                 onLongPress: () {
-                  Get.to(() => DoctorDetailScreen(doctorID: doctor.doctorID));
+                  // Get.to(() => DoctorDetailScreen(doctorID: doctor.doctorID));
                 },
                 child: Card(
                   color: Colors.white,
@@ -190,7 +139,7 @@ class _BestDoctorCardState extends State<BestDoctorCard> {
               );
             }
         );
-      },
-    );
+    });
   }
 }
+

@@ -28,17 +28,17 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
   void initState() {
     super.initState();
     controller = Get.put(DoctorController(), tag: widget.doctorID);
-    controller.fetchDoctorByID(widget.doctorID);
-    doctorFuture = fetchDoctor();
+    // controller.fetchDoctorByID(widget.doctorID);
+    // doctorFuture = fetchDoctor();
   }
 
-  Future<Doctor> fetchDoctor() async {
-    await controller.fetchDoctorByID(widget.doctorID);
-    if (controller.errorMessage.isNotEmpty) {
-      throw Exception(controller.errorMessage);
-    }
-    return controller.doctor.value!;
-  }
+  // Future<Doctor> fetchDoctor() async {
+  //   await controller.fetchDoctorByID(widget.doctorID);
+  //   if (controller.errorMessage.isNotEmpty) {
+  //     throw Exception(controller.errorMessage);
+  //   }
+  //   return controller.doctor.value!;
+  // }
 
   @override
   Widget build(BuildContext context) {
