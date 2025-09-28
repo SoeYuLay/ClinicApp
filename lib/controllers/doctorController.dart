@@ -34,7 +34,6 @@ class DoctorController extends GetxController {
     isLoading.value = true;
     errorMessage.value = '';
     accessToken = await AuthService().getToken();
-    print(accessToken);
 
     try {
       final result = await DoctorServices.fetchDoctorData(
@@ -45,8 +44,6 @@ class DoctorController extends GetxController {
       );
 
       if(isHomePage){
-        print(doctorsHomePage);
-
         doctorsHomePage.assignAll(result);
       }else{
         if (page == 1) {

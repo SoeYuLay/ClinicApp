@@ -23,7 +23,6 @@ class _AppointmentSuccessScreenState extends State<AppointmentSuccessScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    print(widget.appointmentData);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchDoctorByID(widget.doctorID);
     });

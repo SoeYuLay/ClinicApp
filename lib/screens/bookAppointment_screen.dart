@@ -620,18 +620,11 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                       onPressed: appointmentController.isLoading.value
                           ? null
                           : () async {
-                        print('doctorId: ${doctor.doctorID},');
-                        print('appointmentDate: ${controller.selectedDate.value.toString()},');
-                        print('appointmentSlot: ${controller.selectedSlotKey.value}');
-                        print('appointmentNote: ${noteController.text},');
-                        print('appointmentFor: ${controller.patientSelection[0] ? 'SELF' : 'OTHER'}');
-                        print('phoneNumber: ${phoneNumberController.text}, ');
-                        print('newPatient: ${controller.newPatientCheck.value}');
-                        print('PatientName: ${controller.patientSelection[0] ? null : patientNameController.text}');
+
                         final result =
                         await appointmentController.makeAppointment(
                             doctorID: doctor.doctorID,
-                            appointmentDate: controller.selectedDate.value.toString(),
+                            appointmentDate: controller.selectedDate.value.toUtc().toIso8601String(),
                             appointmentSlot: controller.selectedSlotKey.value,
                             appointmentNote: noteController.text,
                             appointmentFor: controller.patientSelection[0] ? 'SELF' : 'OTHER',
