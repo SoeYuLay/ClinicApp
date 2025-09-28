@@ -10,7 +10,8 @@ class DoctorController extends GetxController {
   var isLoading = false.obs;
   var errorMessage = ''.obs;
 
-  var doctors = <Doctor>[].obs;
+  var doctorsHomePage = <Doctor>[].obs;
+  var allDoctors = <Doctor>[].obs;
   var doctor = Rxn<Doctor>();
 
   // Pagination
@@ -40,10 +41,14 @@ class DoctorController extends GetxController {
         pageSize: pageSize,
       );
 
-      if (page == 1) {
-        doctors.assignAll(result);
-      } else {
-        doctors.addAll(result);
+      if(isHomePage){
+        doctorsHomePage.assignAll(result);
+      }else{
+        if (page == 1) {
+          allDoctors.assignAll(result);
+        } else {
+          allDoctors.addAll(result);
+        }
       }
 
       hasMore.value = result.length >= pageSize;

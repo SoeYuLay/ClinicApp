@@ -10,23 +10,32 @@ class BestDoctorCard extends StatelessWidget {
   final DoctorController controller = Get.put(DoctorController());
   final String? speciality;
 
+
   BestDoctorCard({Key? key, required this.isHomePage, this.speciality}) : super(key: key) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchDoctors(isHomePage: isHomePage);
     });
   }
+  List<Doctor> filteredDoctors = [];
 
   @override
   Widget build(BuildContext context) {
+
     return Obx(() {
       if (controller.isLoading.value) {
         return Center(child: CircularProgressIndicator());
       }
 
       // Filter doctors by speciality
-      final filteredDoctors = speciality != null
-          ? controller.doctors.where((d) => d.doctorSpeciality == speciality).toList()
-          : controller.doctors;
+      if(isHomePage){
+        filteredDoctors = speciality != null
+            ? controller.doctorsHomePage.where((d) => d.doctorSpeciality == speciality).toList()
+            : controller.doctorsHomePage;
+      }else{
+        filteredDoctors = speciality != null
+            ? controller.allDoctors.where((d) => d.doctorSpeciality == speciality).toList()
+            : controller.allDoctors;
+      }
 
       if (filteredDoctors.isEmpty) {
         return Center(child: Text('No doctors found'));
