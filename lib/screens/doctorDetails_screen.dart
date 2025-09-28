@@ -247,7 +247,6 @@
 //   }
 // }
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_clinic_app/controllers/doctorController.dart';
 import 'package:flutter_clinic_app/screens/bookAppointment_screen.dart';
@@ -267,18 +266,15 @@ class DoctorDetailScreen extends StatefulWidget {
 }
 
 class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
-  DateTime? selectedDate;
-  String? selectedSlot;
 
   late final DoctorController controller;
 
   @override
   void initState() {
     super.initState();
-    // Use tag to make controller instance unique per doctor
     controller = Get.put(DoctorController(), tag: widget.doctorID);
+    controller.selectedDate.value ??= DateTime.now();
 
-    // Fetch doctor safely after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.fetchDoctorByID(widget.doctorID);
     });
@@ -306,7 +302,6 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                // Doctor Image + buttons
                 Stack(
                   children: [
                     if ((doctor.doctorImage ?? '').isNotEmpty)
@@ -452,12 +447,9 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                     padding: const EdgeInsets.all(16.0),
                     child: DoctorAvailabilityCard(
                       doctorAvailability: doctor.doctorAvailability,
-                      onSelectionChanged: (DateTime date, String? slot) {
-                        if (!mounted) return;
-                        setState(() {
-                          selectedDate = date;
-                          selectedSlot = slot;
-                        });
+                      onSelectionChanged: (date, slot) {
+                        controller.selectedDate.value = date;
+                        controller.selectedSlot.value = slot!;
                       },
                     ),
                   ),
@@ -478,7 +470,7 @@ class _DoctorDetailScreenState extends State<DoctorDetailScreen> {
                             borderRadius: BorderRadius.circular(40)),
                       ),
                       onPressed: () {
-                        if (selectedDate != null && selectedSlot != null) {
+                        if (controller.selectedDate.value != null && controller.selectedSlot.value  != null) {
                           Get.to(() => BookAppointmentScreen(
                             doctorID: widget.doctorID,
                             // selectedDate: selectedDate!,

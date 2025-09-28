@@ -316,9 +316,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                                             const EdgeInsets
                                                                 .all(16.0),
                                                             child: Row(
-                                                              mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .start,
+                                                              mainAxisAlignment: MainAxisAlignment.start,
                                                               children: [
                                                                 IconButton(
                                                                     onPressed:
@@ -352,8 +350,8 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                                             child:
                                                             DoctorAvailabilityCard(
                                                               doctorAvailability: doctor.doctorAvailability,
-                                                              initialDate: controller.selectedDate.value ?? DateTime.now(),
-                                                              initialSlot: controller.selectedSlot.value,
+                                                              // initialDate: controller.selectedDate.value ?? DateTime.now(),
+                                                              // initialSlot: controller.selectedSlot.value,
                                                               onSelectionChanged: (date, slot) {
                                                                 controller.selectedDate.value = date;
                                                                 controller.selectedSlot.value = slot!;

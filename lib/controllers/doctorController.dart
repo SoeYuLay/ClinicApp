@@ -20,13 +20,14 @@ class DoctorController extends GetxController {
   var hasMore = true.obs;
 
   // Booking selections
-  var selectedDate = Rxn<DateTime>();
-  var selectedSlot = RxString('');
+  Rx<DateTime> selectedDate = DateTime.now().obs;
+  RxString selectedSlot = ''.obs;
 
   var patientSelection = <bool>[true, false].obs;
   var newPatientCheck = false.obs;
   var patientNameController = Rx<TextEditingController?>(null);
   var noteController = Rx<TextEditingController?>(null);
+
 
   Future<void> fetchDoctors({required bool isHomePage}) async {
     isLoading.value = true;
@@ -70,13 +71,6 @@ class DoctorController extends GetxController {
 
       doctor.value = result;
 
-      selectedDate.value ??= DateTime.now();
-      selectedSlot.value = selectedSlot.value.isEmpty
-          ? result.doctorAvailability.isNotEmpty
-          ? result.doctorAvailability.first.timeslot.first.slotLabel
-          : ''
-          : selectedSlot.value;
-
       patientNameController.value ??= TextEditingController();
       noteController.value ??= TextEditingController();
     } catch (e) {
@@ -104,14 +98,14 @@ class DoctorController extends GetxController {
     fetchDoctors(isHomePage: isHomePage);
   }
 
-  void clearBookingSelections() {
-    selectedDate.value = null;
-    selectedSlot.value = '';
-    patientSelection.assignAll([true, false]);
-    newPatientCheck.value = false;
-    patientNameController.value?.clear();
-    noteController.value?.clear();
-  }
+  // void clearBookingSelections() {
+  //   selectedDate.value = null;
+  //   selectedSlot.value = '';
+  //   patientSelection.assignAll([true, false]);
+  //   newPatientCheck.value = false;
+  //   patientNameController.value?.clear();
+  //   noteController.value?.clear();
+  // }
 }
 
 

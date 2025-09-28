@@ -4,26 +4,30 @@ import 'package:flutter_clinic_app/utils/constants/app_colors.dart';
 import 'package:flutter_clinic_app/widgets/chipCard.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
+import 'package:get/get.dart';
+import '../controllers/doctorController.dart';
 
 class DoctorAvailabilityCard extends StatefulWidget {
   const DoctorAvailabilityCard(
       {super.key,
       required this.doctorAvailability,
       required this.onSelectionChanged,
-      this.initialDate,
-      this.initialSlot});
+      // this.initialDate,
+      // this.initialSlot
+      });
+  // final DateTime? initialDate;
+  // final String? initialSlot;
   final List<DoctorAvailabilityModel> doctorAvailability;
-  final Function(DateTime date, String? slot) onSelectionChanged;
+  final Function(DateTime date, String slot) onSelectionChanged;
 
-  final DateTime? initialDate;
-  final String? initialSlot;
 
   @override
   State<DoctorAvailabilityCard> createState() => _DoctorAvailabilityCardState();
 }
 
 class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
-  DateTime selectedDate = DateTime.now();
+  final DoctorController controller = Get.put(DoctorController());
+
   final List<String> morningSlots = [
     "08:00 AM",
     "09:00 AM",
@@ -44,19 +48,11 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
     "08:00 PM",
     "09:00 PM"
   ];
-  late ScrollController _scrollController;
-  String? selectedSlot;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _scrollController = ScrollController();
-
-    if (widget.initialDate != null && widget.initialSlot != null) {
-      selectedDate = widget.initialDate!;
-      selectedSlot = widget.initialSlot;
-    }
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
     //   final todayIndex = selectedDate.day - 1;
@@ -89,24 +85,23 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
         spacing: 8,
         children: slots.map((slot) {
           final now = DateTime.now();
-          final isToday = selectedDate.year == now.year &&
-              selectedDate.month == now.month &&
-              selectedDate.day == now.day;
+          final isToday = controller.selectedDate.value.year == now.year &&
+              controller.selectedDate.value.month == now.month &&
+              controller.selectedDate.value.day == now.day;
 
-          final slotTime = getSlotDateTime(slot, selectedDate);
+          final slotTime = getSlotDateTime(slot, controller.selectedDate.value);
 
           final isAvailable = availableSlots.contains(slot) &&
               ((isToday ? slotTime.isAfter(now) : true));
 
-          final isSelected = selectedSlot == slot;
+          final isSelected = controller.selectedSlot.value == slot;
 
           return GestureDetector(
             onTap: isAvailable
                 ? () {
-                    setState(() {
-                      selectedSlot = slot;
-                      widget.onSelectionChanged(selectedDate, selectedSlot);
-                    });
+                controller.selectedSlot.value = slot;
+                widget.onSelectionChanged(controller.selectedDate.value, controller.selectedSlot.value);
+
                   }
                 : null,
             child: ChipCard(
@@ -127,156 +122,154 @@ class _DoctorAvailabilityCardState extends State<DoctorAvailabilityCard> {
 
   @override
   Widget build(BuildContext context) {
-    final daysInMonth =
-        DateTime(selectedDate.year, selectedDate.month + 1, 0).day;
-    final selectedDay = DateFormat('EEE').format(selectedDate).toUpperCase();
-    // final availableSlots = widget.doctorAvailability
-    //         .where((d) => d.key == selectedDay)
-    //         .expand((d) => d.timeslot)
-    //         .map((t) => t.slotLabel)
-    //         .toSet()
-    //         .toList() ??
-    //     [];
-    final availableSlots = widget.doctorAvailability
-        .where((d) => d.key == selectedDay)
-        .expand((d) {
-      return d.timeslot.map((s) {
-        final parsed = DateFormat("h:mm a").parseLoose(s.slotLabel);
-        return DateFormat("hh:mm a").format(parsed);
-      });
-    }).toSet().toList();
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300)),
-      child: Column(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(12)),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedDate = DateTime(
-                              selectedDate.year, selectedDate.month - 1, 1);
-                        });
-                      },
-                      child: Icon(Iconsax.arrow_left_3, size: 30)),
-                  Text(
-                    DateFormat.yMMMM().format(selectedDate),
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                  GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedDate = DateTime(
-                              selectedDate.year, selectedDate.month + 1, 1);
-                        });
-                      },
-                      child: Icon(
-                        Iconsax.arrow_right_2,
-                        size: 30,
-                      )),
-                ],
+    return Obx((){
+      final daysInMonth =
+          DateTime(controller.selectedDate.value.year, controller.selectedDate.value.month + 1, 0).day;
+      final selectedDay = DateFormat('EEE').format(controller.selectedDate.value).toUpperCase();
+      // final availableSlots = widget.doctorAvailability
+      //         .where((d) => d.key == selectedDay)
+      //         .expand((d) => d.timeslot)
+      //         .map((t) => t.slotLabel)
+      //         .toSet()
+      //         .toList() ??
+      //     [];
+      final availableSlots = widget.doctorAvailability
+          .where((d) => d.key == selectedDay)
+          .expand((d) {
+        return d.timeslot.map((s) {
+          final parsed = DateFormat("h:mm a").parseLoose(s.slotLabel);
+          return DateFormat("hh:mm a").format(parsed);
+        });
+      }).toSet().toList();
+      return Container(
+        decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.grey.shade300)),
+        child: Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          controller.selectedDate.value = DateTime(
+                              controller.selectedDate.value.year, controller.selectedDate.value.month - 1, 1);
+                        },
+                        child: Icon(Iconsax.arrow_left_3, size: 30)),
+                    Text(
+                      DateFormat.yMMMM().format(controller.selectedDate.value),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    GestureDetector(
+                        onTap: () {
+                          controller.selectedDate.value = DateTime(
+                              controller.selectedDate.value.year, controller.selectedDate.value.month + 1, 1);
+                        },
+                        child: Icon(
+                          Iconsax.arrow_right_2,
+                          size: 30,
+                        )),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          Container(
-            height: 90,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-              border: Border.all(color: Colors.grey.shade300),
-            ),
-            child: ListView.builder(
-              controller: _scrollController,
-              scrollDirection: Axis.horizontal,
-              itemCount: daysInMonth,
-              itemBuilder: (context, index) {
-                final firstDayOfMonth =
-                    DateTime(selectedDate.year, selectedDate.month, 1);
-                final date = firstDayOfMonth.add(Duration(days: index));
+            Container(
+              height: 90,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: daysInMonth,
+                itemBuilder: (context, index) {
+                  final firstDayOfMonth =
+                  DateTime(controller.selectedDate.value.year, controller.selectedDate.value.month, 1);
+                  final date = firstDayOfMonth.add(Duration(days: index));
 
-                final now = DateTime.now();
-                final today = DateTime(now.year, now.month, now.day);
+                  final now = DateTime.now();
+                  final today = DateTime(now.year, now.month, now.day);
 
-                //Skip past dates
-                if (date.isBefore(today)) {
-                  return const SizedBox.shrink();
-                }
+                  //Skip past dates
+                  if (date.isBefore(today)) {
+                    return const SizedBox.shrink();
+                  }
 
-                final isSelected = date.day == selectedDate.day &&
-                    date.month == selectedDate.month &&
-                    date.year == selectedDate.year;
+                  final isSelected = date.day == controller.selectedDate.value.day &&
+                      date.month == controller.selectedDate.value.month &&
+                      date.year == controller.selectedDate.value.year;
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      selectedDate = date;
-                      selectedSlot = null;
-                      widget.onSelectionChanged(selectedDate, selectedSlot);
-                    });
-                  },
-                  child: Container(
-                    width: 60,
-                    margin:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: isSelected
-                            ? AppColor.primaryColor
-                            : Colors.grey.shade500,
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        controller.selectedDate.value = date;
+                        controller.selectedSlot.value = '';
+                        widget.onSelectionChanged(controller.selectedDate.value, controller.selectedSlot.value);
+                      });
+                    },
+                    child: Container(
+                      width: 60,
+                      margin:
+                      const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: isSelected
+                              ? AppColor.primaryColor
+                              : Colors.grey.shade500,
+                        ),
+                        color:
+                        isSelected ? const Color(0xFFEBEEFA) : Colors.white,
                       ),
-                      color:
-                          isSelected ? const Color(0xFFEBEEFA) : Colors.white,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            DateFormat.E().format(date),
-                            style: TextStyle(
-                                color: Colors.grey.shade600, fontSize: 17),
-                          ),
-                          const SizedBox(height: 5),
-                          Text(
-                            date.day.toString(),
-                            style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              DateFormat.E().format(date),
+                              style: TextStyle(
+                                  color: Colors.grey.shade600, fontSize: 17),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              date.day.toString(),
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-          ),
 
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildSlotSection('Morning', morningSlots,availableSlots),
-                buildSlotSection('Afternoon', afternoonSlots,availableSlots),
-                buildSlotSection('Evening', eveningSlots,availableSlots),
-              ],
+            Padding(
+                padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildSlotSection('Morning', morningSlots,availableSlots),
+                    buildSlotSection('Afternoon', afternoonSlots,availableSlots),
+                    buildSlotSection('Evening', eveningSlots,availableSlots),
+                  ],
+                )
             )
-          )
-        ],
-      ),
+          ],
+        ),
+      );
+    }
     );
   }
 }
