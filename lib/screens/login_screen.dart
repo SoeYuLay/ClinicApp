@@ -126,28 +126,49 @@ class _LoginScreenState extends State<LoginScreen> {
                                 borderRadius: BorderRadius.all(Radius.circular(40))
                             )
                         ),
-                        onPressed: () async {
-                          if(emailController.text.isEmpty || pwdController.text.isEmpty){
-                            signInController.errorMessage.value =
-                            "Credentials should not be empty";
-                            return;
-                          }
-                          final result= await signInController.signIn(emailController.text.trim(), pwdController.text.trim());
+                        // onPressed: () async {
+                        //   if(emailController.text.isEmpty || pwdController.text.isEmpty){
+                        //     signInController.errorMessage.value =
+                        //     "Credentials should not be empty";
+                        //     return;
+                        //   }
+                        //   final result= await signInController.signIn(emailController.text.trim(), pwdController.text.trim());
+                        //
+                        //   if(result['success']){
+                        //     // ScaffoldMessenger.of(context).showSnackBar(
+                        //     //   SnackBar(content: Text(result['message'])),
+                        //     // );
+                        //
+                        //     Get.to(() => BottomNavController());
+                        //   }else{
+                        //     Get.snackbar(
+                        //       'Error',
+                        //       result['message'] ?? 'Sign In failed. Please try again.',
+                        //     );
+                        //   }
+                        // },
+                          onPressed: () async {
+                            if (emailController.text.isEmpty || pwdController.text.isEmpty) {
+                              signInController.errorMessage.value = "Credentials should not be empty";
+                              return;
+                            }
 
-                          if(result['success']){
-                            // ScaffoldMessenger.of(context).showSnackBar(
-                            //   SnackBar(content: Text(result['message'])),
-                            // );
-
-                            Get.to(() => BottomNavController());
-                          }else{
-                            Get.snackbar(
-                              'Error',
-                              result['message'] ?? 'Sign In failed. Please try again.',
+                            final result = await signInController.signIn(
+                              emailController.text.trim(),
+                              pwdController.text.trim(),
                             );
-                          }
-                        },
-                        child: Text('Go to Home',style: TextStyle(fontSize: 18)),
+
+                            if (result['success']) {
+                              Get.to(() => BottomNavController());
+                            } else {
+                              Get.snackbar(
+                                'Error',
+                                result['message'] ?? 'Sign In failed. Please try again.',
+                              );
+                            }
+                          },
+
+                          child: Text('Go to Home',style: TextStyle(fontSize: 18)),
                       ),
                     ),
                     Row(

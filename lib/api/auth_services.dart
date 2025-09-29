@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_clinic_app/screens/login_screen.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:http/http.dart' as http;
 
 class AuthService {
@@ -202,19 +205,6 @@ class AuthService {
     }
   }
 
-
-  Future<Map<String, dynamic>> getUserProfile() async {
-    final token = await getToken();
-    final response = await http.get(
-      Uri.parse('$baseUrl/profile'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
-
-    return jsonDecode(response.body);
-  }
-
   Future<void> saveToken(String token) async {
     await _storage.write(key: 'accessToken', value: token);
   }
@@ -223,38 +213,55 @@ class AuthService {
     return await _storage.read(key: 'accessToken') ?? '';
   }
 
-  static Future<Map<String, dynamic>> signIn({
+  Future<Map<String, dynamic>> signIn({
     required String email,
-    required String password
+    required String password,
   }) async {
     try {
       final response = await http.post(
-          Uri.parse("$baseUrl/auth/signin"),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode({
-            "email": email,
-            "password": password
-          })
+        Uri.parse("$baseUrl/auth/signin"),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "email": email,
+          "password": password,
+        }),
       );
+
       final data = jsonDecode(response.body);
 
-      if (response.statusCode == 201){
-        return{
+      if (response.statusCode == 201) {
+        final token = data['data']?['access_token'] ??
+            data['data']?['session']?['access_token'] ?? '';
+
+        if (token.isNotEmpty) {
+          await saveToken(token); // store in secure storage
+        }
+
+        return {
           'success': data['success'] ?? true,
-          'message' : data['message'] ?? "Sign In Successfully"
+          'message': data['data']?['message'] ?? "Sign In Successfully",
+          'token': token,
         };
-      }else{
-        return{
+      } else {
+        return {
           'success': false,
-          'message': data['message'] ?? "Sign In failed. Please try again."
+          'message': data['message'] ?? "Sign In failed. Please try again.",
         };
       }
-    }
-    catch (e) {
-      return{
+    } catch (e) {
+      return {
         'success': false,
-        'message': "Error in registerUser: $e"
+        'message': "Error in signIn: $e",
       };
     }
+  }
+
+
+
+  Future<void> logout() async {
+    await _storage.deleteAll();
+
+    // Navigate to SignIn screen and remove all routes
+    Get.offAll(() => const LoginScreen());
   }
 }

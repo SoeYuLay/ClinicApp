@@ -31,7 +31,6 @@ class DoctorServices {
         return data.map((json) => Doctor.fromJson(json)).toList();
 
       }else{
-        print('hi ${response.statusCode}');
         throw Exception("Failed with status: ${response.statusCode}");
       }
     }

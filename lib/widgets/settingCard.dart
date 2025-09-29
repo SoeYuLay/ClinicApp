@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_clinic_app/api/auth_services.dart';
 import 'package:flutter_clinic_app/screens/onboarding_screen.dart';
 import 'package:flutter_clinic_app/screens/setting/aboutUs_screen.dart';
 import 'package:flutter_clinic_app/screens/setting/privacyPolicy_screen.dart';
@@ -78,13 +79,18 @@ Widget _buildCard({required IconData iconData, required String cate}) {
         Get.to(()=>PrivacyPolicyScreen());
       }
     },
-    child: ListTile(
-        leading: Icon(
-          iconData,
-          size: 28,
-          color: cate == 'Logout' ? Colors.red : Colors.black,
-        ),
-        title: Text(cate,style: TextStyle(color: cate == 'Logout' ? Colors.red : Colors.black),),
-        trailing: Icon(Iconsax.arrow_right_3,color: cate == 'Logout' ? Colors.red : Colors.black,)),
+    child: InkWell(
+      onTap: () async{
+        await AuthService().logout();
+      },
+      child: ListTile(
+          leading: Icon(
+            iconData,
+            size: 28,
+            color: cate == 'Logout' ? Colors.red : Colors.black,
+          ),
+          title: Text(cate,style: TextStyle(color: cate == 'Logout' ? Colors.red : Colors.black),),
+          trailing: Icon(Iconsax.arrow_right_3,color: cate == 'Logout' ? Colors.red : Colors.black,)),
+    ),
   );
 }

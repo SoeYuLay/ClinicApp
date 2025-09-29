@@ -1,7 +1,6 @@
 import 'package:flutter_clinic_app/api/auth_services.dart';
 import 'package:flutter_clinic_app/api/doctor_services.dart';
 import 'package:flutter_clinic_app/models/doctor.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DoctorController extends GetxController {
