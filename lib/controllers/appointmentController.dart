@@ -7,7 +7,6 @@ import '../api/auth_services.dart';
 class AppointmentController extends GetxController{
   var isLoading = false.obs;
   var errorMessage = ''.obs;
-  static String accessToken = '';
   var appointmentsList = <Appointment>[].obs;
   var appointmentResponse = Rxn<AppointmentResponse>();
   var appointment = Rxn<Appointment>();
@@ -26,10 +25,8 @@ class AppointmentController extends GetxController{
     isLoading.value = true;
     errorMessage.value = '';
 
-    accessToken = await AuthService().getToken();
-
     final result = await AppointmentServices.makeAppointment(
-        token: accessToken,
+        token: await AuthService().getToken(),
         doctorID: doctorID,
         appointmentDate: appointmentDate,
         appointmentSlot: appointmentSlot,
@@ -48,9 +45,7 @@ class AppointmentController extends GetxController{
     isLoading.value = true;
     errorMessage.value = '';
 
-    accessToken = await AuthService().getToken();
-
-    final result = await AppointmentServices.fetchAppointments(token: accessToken);
+    final result = await AppointmentServices.fetchAppointments(token: await AuthService().getToken());
 
     isLoading.value = false;
     appointmentsList.assignAll(result);
@@ -61,7 +56,7 @@ class AppointmentController extends GetxController{
     errorMessage.value = '';
     try {
       final result = await AppointmentServices.fetchAppointmentByID(
-          accessToken: accessToken,
+          accessToken: await AuthService().getToken(),
           appointmentID: appointmentID);
 
       appointmentDetail.value = result;

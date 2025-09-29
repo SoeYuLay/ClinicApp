@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DoctorController extends GetxController {
-  static String accessToken = '';
 
   var isLoading = false.obs;
   var errorMessage = ''.obs;
@@ -31,12 +30,12 @@ class DoctorController extends GetxController {
   Future<void> fetchDoctors({required bool isHomePage}) async {
     isLoading.value = true;
     errorMessage.value = '';
-    accessToken = await AuthService().getToken();
-    print(accessToken);
+
+    print(await AuthService().getToken());
 
     try {
       final result = await DoctorServices.fetchDoctorData(
-        token: accessToken,
+        token: await AuthService().getToken(),
         isHomePage: isHomePage,
         page: page,
         pageSize: pageSize,
@@ -65,7 +64,7 @@ class DoctorController extends GetxController {
     errorMessage.value = '';
     try {
       final result = await DoctorServices.fetchDoctorDataByID(
-        accessToken: accessToken,
+        accessToken: await AuthService().getToken(),
         doctorID: doctorID,
       );
 
