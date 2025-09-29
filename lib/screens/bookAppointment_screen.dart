@@ -607,7 +607,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                           // print('phoneNumber: $fullPhoneNumber, ');
                           // print('newPatient: ${controller.newPatientCheck.value}');
                           // print('PatientName: ${controller.patientSelection[0] ? null : patientNameController.text}');
-                        final result =
+
                         await appointmentController.makeAppointment(
                             doctorID: doctor.doctorID,
                             appointmentDate: controller.selectedDate.value.toUtc().toIso8601String(),

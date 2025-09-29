@@ -9,7 +9,8 @@ class AppointmentController extends GetxController{
   var errorMessage = ''.obs;
   static String accessToken = '';
   var appointmentsList = <Appointment>[].obs;
-  var appointmentResponse = <AppointmentResponse>[].obs;
+  var appointmentResponse = Rxn<AppointmentResponse>();
+  var appointment = Rxn<Appointment>();
 
   Future<void> makeAppointment({
     required String doctorID,
@@ -39,8 +40,7 @@ class AppointmentController extends GetxController{
     );
 
     isLoading.value = false;
-    appointmentResponse.assignAll(result);
-
+    appointmentResponse.value = result;
   }
 
   Future<void> fetchAppointments() async {
@@ -54,4 +54,21 @@ class AppointmentController extends GetxController{
     isLoading.value = false;
     appointmentsList.assignAll(result);
   }
+
+  // Future<void> fetchAppointmentByID(String appointmentID) async {
+  //   isLoading.value = true;
+  //   errorMessage.value = '';
+  //   try {
+  //     final result = await AppointmentServices.fetchAppointmentByID(
+  //         accessToken: accessToken,
+  //         appointmentID: appointmentID);
+  //
+  //     // doctor.value = result;
+  //
+  //   } catch (e) {
+  //     errorMessage.value = e.toString();
+  //   } finally {
+  //     isLoading.value = false;
+  //   }
+  // }
 }

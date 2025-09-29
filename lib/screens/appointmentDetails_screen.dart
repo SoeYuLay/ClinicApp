@@ -1,4 +1,5 @@
 // import 'package:flutter/material.dart';
+// import 'package:flutter_clinic_app/controllers/appointmentController.dart';
 // import 'package:flutter_clinic_app/utils/constants/app_colors.dart';
 // import 'package:flutter_clinic_app/widgets/aptDetailChecklist.dart';
 // import 'package:flutter_clinic_app/widgets/patientGuidelineCard.dart';
@@ -9,10 +10,17 @@
 // import '../widgets/circularIconButton.dart';
 // import '../widgets/statusChip.dart';
 //
-// class AppointmentDetailsScreen extends StatelessWidget {
-//   const AppointmentDetailsScreen({required this.booking,super.key});
+// class AppointmentDetailsScreen extends StatefulWidget {
+//   const AppointmentDetailsScreen({required this.bookingID,super.key});
 //
-//   final Bookings booking;
+//   final String bookingID;
+//
+//   @override
+//   State<AppointmentDetailsScreen> createState() => _AppointmentDetailsScreenState();
+// }
+//
+// class _AppointmentDetailsScreenState extends State<AppointmentDetailsScreen> {
+//   final controller = Get.put(AppointmentController());
 //
 //   Widget appointmentButtons(IconData iconData, String text){
 //     return Column(
@@ -26,6 +34,15 @@
 //         Text(text,style: TextStyle(color: Colors.grey.shade700),)
 //       ],
 //     );
+//   }
+//
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//
+//     });
 //   }
 //
 //   @override

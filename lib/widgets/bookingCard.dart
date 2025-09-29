@@ -6,6 +6,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
+import '../screens/appointmentDetails_screen.dart';
+
 class BookingCard extends StatefulWidget {
   BookingCard({super.key});
 
@@ -61,7 +63,7 @@ class _BookingCardState extends State<BookingCard> {
 
               return InkWell(
                 onLongPress: (){
-                  // Get.to(()=>AppointmentDetailsScreen(booking: booking));
+                  // Get.to(()=>AppointmentDetailsScreen(bookingID: appointment.bookingID));
                 },
                 child: Card(
                   color: Colors.white,

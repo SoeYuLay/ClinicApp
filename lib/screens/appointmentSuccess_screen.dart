@@ -31,7 +31,7 @@ class _AppointmentSuccessScreenState extends State<AppointmentSuccessScreen> {
           if (controller.errorMessage.isNotEmpty) {
             return Center(child: Text('Error: ${controller.errorMessage.value}'));
           }
-          final appointmentResponse = controller.appointmentResponse[0];
+          final appointmentResponse = controller.appointmentResponse.value;
 
           if (appointmentResponse == null) return const Center(child: Text('No doctor found'));
 

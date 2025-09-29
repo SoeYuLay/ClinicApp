@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 class AppointmentServices {
   static const String baseUrl = "https://clinic-bk-production.up.railway.app";
 
-  static Future<List<AppointmentResponse>> makeAppointment({
+  static Future<AppointmentResponse> makeAppointment({
     required String token,
     required String doctorID,
     required String appointmentDate,
@@ -39,7 +39,7 @@ class AppointmentServices {
 
       if (response.statusCode == 200 || response.statusCode == 201){
         final decoded = jsonDecode(response.body);
-        return [AppointmentResponse.fromJson(decoded['data'])];
+        return AppointmentResponse.fromJson(decoded['data']);
 
       }else{
         throw Exception("Failed with status: ${response.statusCode}");
@@ -77,4 +77,31 @@ class AppointmentServices {
       throw Exception("Error fetching specialties: $e");
     }
   }
+
+  // static Future<Appointment> fetchAppointmentByID({
+  //   required String accessToken,
+  //   required String appointmentID
+  // }) async {
+  //   try {
+  //     final response = await http.get(
+  //       Uri.parse("$baseUrl/appointments/$appointmentID"),
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         "Accept": "application/json",
+  //         "Authorization": "Bearer $accessToken"
+  //       },
+  //     );
+  //
+  //     if (response.statusCode == 200){
+  //       final decoded = jsonDecode(response.body);
+  //       final doctorDataJson = decoded['data'];
+  //       return Doctor.fromJson(doctorDataJson);
+  //     }else{
+  //       throw Exception("Failed with status: ${response.statusCode}");
+  //     }
+  //   }
+  //   catch (e) {
+  //     throw Exception("Error fetching specialties: $e");
+  //   }
+  // }
 }
