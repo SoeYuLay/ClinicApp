@@ -1,5 +1,7 @@
-import 'package:flutter_clinic_app/models/bookings.dart';
+import 'package:flutter_clinic_app/models/appointments.dart';
 import 'package:flutter_clinic_app/tempDoctorList.dart';
+
+import 'models/bookings.dart';
 
 class TempBookingList{
   List<Bookings> tempBookingList = [

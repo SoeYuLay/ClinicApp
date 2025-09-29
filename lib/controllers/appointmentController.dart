@@ -22,6 +22,7 @@ class AppointmentController extends GetxController{
     errorMessage.value = '';
 
     accessToken = await AuthService().getToken();
+    print(accessToken);
 
     final result = await AppointmentServices.makeAppointment(
         token: accessToken,
@@ -47,4 +48,26 @@ class AppointmentController extends GetxController{
       return result;
     }
   }
+
+  // Future<Map<String, dynamic>> fetchAppointments() async {
+  //   isLoading.value = true;
+  //   errorMessage.value = '';
+  //
+  //   accessToken = await AuthService().getToken();
+  //   print(accessToken);
+  //
+  //   final result = await AppointmentServices.fetchAppointments(token: accessToken);
+  //
+  //   isLoading.value = false;
+  //
+  //   final statusCode = result['statusCode'];
+  //   final body = result['body'];
+  //
+  //   if (statusCode == 200 || statusCode == 201 && body['success'] == true) {
+  //     return result;
+  //   } else {
+  //     errorMessage.value = result['message'] ?? "Make Appointment failed";
+  //     return result;
+  //   }
+  // }
 }

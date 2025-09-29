@@ -30,6 +30,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
   final phoneNumberController = TextEditingController();
   final noteController = TextEditingController();
   final patientNameController = TextEditingController();
+  String fullPhoneNumber = '';
 
   @override
   void initState() {
@@ -531,7 +532,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                                     .digitsOnly, // allow only numbers
                               ],
                               onChanged: (phone) {
-
+                                fullPhoneNumber = phone.completeNumber;
                                 // print(phone.completeNumber);
                               },
                             ),
@@ -594,33 +595,18 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                         foregroundColor: AppColor.bgColor,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                       ),
-                      // onPressed: () {
-                      //   print('doctorID: ${doctor.doctorID},');
-                      //   print('appointmentDate: ${controller.selectedDate.value.toString()},');
-                      //   print('appointmentSlot: ${controller.selectedSlotKey.value}');
-                      //   print('appointmentNote: ${noteController.text},');
-                      //   print('appointmentFor: ${controller.patientSelection[0] ? 'SELF' : 'OTHER'}');
-                      //   print('phoneNumber: ${phoneNumberController.text}, ');
-                      //   print('newPatient: ${controller.newPatientCheck.value}');
-                      //   print('PatientName: ${controller.patientSelection[0] ? null : patientNameController.text}');
-                      //   // bookingController.makeAppointment(
-                      //       doctorID: doctor.doctorID,
-                      //       appointmentDate: controller.selectedDate.value.toString(),
-                      //       appointmentSlot: controller.selectedSlotKey.value,
-                      //       appointmentNote: noteController.text,
-                      //       appointmentFor: controller.patientSelection[0] ? 'SELF' : 'OTHER',
-                      //       phoneNumber: phoneNumberController.text
-                      //       newPatient: controller.newPatientCheck.value,
-                      //       patientName: controller.patientSelection[0] ? null : patientNameController.text
-                      //   //     );
-                      //   Get.to(() => AppointmentSuccessScreen(
-                      //     doctorID: doctor.doctorID,
-                      //   ));
-                      //                       },
+
                       onPressed: appointmentController.isLoading.value
                           ? null
                           : () async {
-
+                          // print('doctorID: ${doctor.doctorID},');
+                          // print('appointmentDate: ${controller.selectedDate.value.toUtc().toIso8601String()},');
+                          // print('appointmentSlot: ${controller.selectedSlotKey.value}');
+                          // print('appointmentNote: ${noteController.text},');
+                          // print('appointmentFor: ${controller.patientSelection[0] ? 'SELF' : 'OTHER'}');
+                          print('phoneNumber: $fullPhoneNumber, ');
+                          // print('newPatient: ${controller.newPatientCheck.value}');
+                          // print('PatientName: ${controller.patientSelection[0] ? null : patientNameController.text}');
                         final result =
                         await appointmentController.makeAppointment(
                             doctorID: doctor.doctorID,

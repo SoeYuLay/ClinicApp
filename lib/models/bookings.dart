@@ -17,5 +17,5 @@ class Bookings{
     required this.status,
     required this.bookingType,
     required this.bookingDesc
-});
+  });
 }

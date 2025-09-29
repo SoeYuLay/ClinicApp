@@ -34,6 +34,7 @@ class DoctorController extends GetxController {
     isLoading.value = true;
     errorMessage.value = '';
     accessToken = await AuthService().getToken();
+    print(accessToken);
 
     try {
       final result = await DoctorServices.fetchDoctorData(
