@@ -62,8 +62,8 @@ class _BookingCardState extends State<BookingCard> {
               final appointment = controller.appointmentsList[index];
 
               return InkWell(
-                onLongPress: (){
-                  // Get.to(()=>AppointmentDetailsScreen(bookingID: appointment.bookingID));
+                onTap: (){
+                  Get.to(()=>AppointmentDetailsScreen(appointmentID: appointment.bookingID));
                 },
                 child: Card(
                   color: Colors.white,

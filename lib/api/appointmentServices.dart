@@ -78,30 +78,30 @@ class AppointmentServices {
     }
   }
 
-  // static Future<Appointment> fetchAppointmentByID({
-  //   required String accessToken,
-  //   required String appointmentID
-  // }) async {
-  //   try {
-  //     final response = await http.get(
-  //       Uri.parse("$baseUrl/appointments/$appointmentID"),
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         "Accept": "application/json",
-  //         "Authorization": "Bearer $accessToken"
-  //       },
-  //     );
-  //
-  //     if (response.statusCode == 200){
-  //       final decoded = jsonDecode(response.body);
-  //       final doctorDataJson = decoded['data'];
-  //       return Doctor.fromJson(doctorDataJson);
-  //     }else{
-  //       throw Exception("Failed with status: ${response.statusCode}");
-  //     }
-  //   }
-  //   catch (e) {
-  //     throw Exception("Error fetching specialties: $e");
-  //   }
-  // }
+  static Future<Appointment> fetchAppointmentByID({
+    required String accessToken,
+    required String appointmentID
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/appointments/$appointmentID"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $accessToken"
+        },
+      );
+
+      if (response.statusCode == 200){
+        final decoded = jsonDecode(response.body);
+        final appointmentJson = decoded['data'];
+        return Appointment.fromJson(appointmentJson);
+      }else{
+        throw Exception("Failed with status: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      throw Exception("Error fetching specialties: $e");
+    }
+  }
 }

@@ -26,8 +26,6 @@ class DoctorController extends GetxController {
 
   var patientSelection = <bool>[true, false].obs;
   var newPatientCheck = false.obs;
-  // var patientNameController = Rx<TextEditingController?>(null);
-  // var noteController = Rx<TextEditingController?>(null);
 
 
   Future<void> fetchDoctors({required bool isHomePage}) async {

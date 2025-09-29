@@ -11,6 +11,7 @@ class AppointmentController extends GetxController{
   var appointmentsList = <Appointment>[].obs;
   var appointmentResponse = Rxn<AppointmentResponse>();
   var appointment = Rxn<Appointment>();
+  var appointmentDetail = Rxn<Appointment>();
 
   Future<void> makeAppointment({
     required String doctorID,
@@ -55,20 +56,20 @@ class AppointmentController extends GetxController{
     appointmentsList.assignAll(result);
   }
 
-  // Future<void> fetchAppointmentByID(String appointmentID) async {
-  //   isLoading.value = true;
-  //   errorMessage.value = '';
-  //   try {
-  //     final result = await AppointmentServices.fetchAppointmentByID(
-  //         accessToken: accessToken,
-  //         appointmentID: appointmentID);
-  //
-  //     // doctor.value = result;
-  //
-  //   } catch (e) {
-  //     errorMessage.value = e.toString();
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
+  Future<void> fetchAppointmentByID(String appointmentID) async {
+    isLoading.value = true;
+    errorMessage.value = '';
+    try {
+      final result = await AppointmentServices.fetchAppointmentByID(
+          accessToken: accessToken,
+          appointmentID: appointmentID);
+
+      appointmentDetail.value = result;
+
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
