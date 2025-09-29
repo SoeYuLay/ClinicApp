@@ -6,10 +6,16 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
-class BookingCard extends StatelessWidget {
+class BookingCard extends StatefulWidget {
   BookingCard({super.key});
+
+  @override
+  State<BookingCard> createState() => _BookingCardState();
+}
+
+class _BookingCardState extends State<BookingCard> {
   final controller = Get.put(AppointmentController());
-  
+
   Widget bookingButton(IconData icon, String text){
     return ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
@@ -22,17 +28,15 @@ class BookingCard extends StatelessWidget {
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(40))
           ),
-    
+
         ),
         onPressed: (){},
         icon: Icon(icon),
         label: Text(text,style: TextStyle(fontSize: 18,color: Colors.black)));
   }
 
-
   @override
   Widget build(BuildContext context) {
-    // final bookingList = TempBookingList().tempBookingList;
     return Obx((){
       if(controller.isLoading.value){
         return Center(child: CircularProgressIndicator());
@@ -41,7 +45,6 @@ class BookingCard extends StatelessWidget {
         return Center(child: Text("Error: ${controller.errorMessage}"));
       }
       if (controller.appointmentsList.isEmpty) {
-        print(controller.appointmentsList);
         return Center(child: Text("No data found"));
       }
 
@@ -120,13 +123,13 @@ class BookingCard extends StatelessWidget {
                                     Row(
                                       children: [
                                         Icon(
-                                          appointment.appointmentType == 'ONLINE' ? Iconsax.video5
+                                          appointment.appointmentType == 'Online' ? Iconsax.video5
                                               : Iconsax.user_tag,
                                           size: 18,
                                           color: AppColor.primaryColor,
                                         ),
                                         const SizedBox(width: 5),
-                                        Text(appointment.appointmentType == 'IN_PERSON' ? 'In Person' : 'Online',
+                                        Text(appointment.appointmentType,
                                             style: TextStyle(
                                                 color: AppColor.primaryColor,fontWeight: FontWeight.bold,
                                                 fontSize: 15)),

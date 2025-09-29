@@ -38,7 +38,7 @@ class Appointment{
         appointmentFor: json['appointmentFor'] ?? '',
         phoneNumber: json['phoneNumber'] ?? '',
         appointmentNote: json['note'] ?? '',
-        appointmentType: json['appointmentType'] ?? '',
+        appointmentType: json['type'] == 'IN_PERSON' ? 'In Person' : 'Online',
         doctor: AppointmentDoctor.fromJson(json['doctor'] ?? ''),
     );
   }

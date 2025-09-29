@@ -21,7 +21,9 @@ class _BookingScreenState extends State<BookingScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    controller.fetchAppointments();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchAppointments();
+    });
   }
 
   @override
