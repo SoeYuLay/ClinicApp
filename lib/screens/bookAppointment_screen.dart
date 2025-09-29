@@ -604,7 +604,7 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                           // print('appointmentSlot: ${controller.selectedSlotKey.value}');
                           // print('appointmentNote: ${noteController.text},');
                           // print('appointmentFor: ${controller.patientSelection[0] ? 'SELF' : 'OTHER'}');
-                          print('phoneNumber: $fullPhoneNumber, ');
+                          // print('phoneNumber: $fullPhoneNumber, ');
                           // print('newPatient: ${controller.newPatientCheck.value}');
                           // print('PatientName: ${controller.patientSelection[0] ? null : patientNameController.text}');
                         final result =
@@ -619,22 +619,13 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                             patientName: controller.patientSelection[0] ? '' : patientNameController.text
                         );
 
-                        final body = result['body'];
-                        final appointmentData = body['data'];
+                        // final appointmentData = body['data'];
 
-                        if (body['success']) {
                           Get.to(() => AppointmentSuccessScreen(
                             doctorID: doctor.doctorID,
-                            appointmentData: appointmentData,
+                            // appointmentData: appointmentData,
                           ));
-                        } else {
 
-                          Get.snackbar(
-                            'Error',
-                            body['message'] ??
-                                'Make Appointment failed',
-                          );
-                        }
                       },
                       child: const Text('Book Now', style: TextStyle(fontSize: 18)),
                     ),

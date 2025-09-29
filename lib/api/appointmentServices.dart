@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'package:flutter_clinic_app/models/appointments.dart';
+import 'package:flutter_clinic_app/models/appointment.dart';
 import 'package:http/http.dart' as http;
 
 class AppointmentServices {
   static const String baseUrl = "https://clinic-bk-production.up.railway.app";
 
-  static Future<Map<String, dynamic>> makeAppointment({
+  static Future<List<AppointmentResponse>> makeAppointment({
     required String token,
     required String doctorID,
     required String appointmentDate,
@@ -37,21 +37,23 @@ class AppointmentServices {
 
       final response = await http.post(url, headers: headers, body: body);
 
-      final data = jsonDecode(response.body);
+      if (response.statusCode == 200 || response.statusCode == 201){
+        final decoded = jsonDecode(response.body);
+        return [AppointmentResponse.fromJson(decoded['data'])];
 
-      return {
-        "statusCode": response.statusCode,
-        "body": data,
-      };
+      }else{
+        throw Exception("Failed with status: ${response.statusCode}");
+      }
+      // return {
+      //   "statusCode": response.statusCode,
+      //   "body": data,
+      // };
     } catch (e) {
-      return {
-        "success": false,
-        "message": "Error: $e",
-      };
+      throw Exception("Error fetching appointment: $e");
     }
   }
 
-  static Future<List<Appointments>> fetchAppointments({
+  static Future<List<Appointment>> fetchAppointments({
     required String token,
   }) async {
     try {
@@ -69,7 +71,7 @@ class AppointmentServices {
       if (response.statusCode == 200){
         final decoded = jsonDecode(response.body);
         final List<dynamic> data = decoded['data'];
-        return data.map((json) => Appointments.fromJson(json)).toList();
+        return data.map((json) => Appointment.fromJson(json)).toList();
 
       }else{
         throw Exception("Failed with status: ${response.statusCode}");

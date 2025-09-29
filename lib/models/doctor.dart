@@ -51,3 +51,26 @@ class Doctor{
   }
 
 }
+
+class AppointmentDoctor {
+  final String id;
+  final String name;
+  final String speciality;
+  final String imageUrl;
+
+  AppointmentDoctor({
+    required this.id,
+    required this.name,
+    required this.speciality,
+    required this.imageUrl,
+  });
+
+  factory AppointmentDoctor.fromJson(Map<String, dynamic> json) {
+    return AppointmentDoctor(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      speciality: json['primarySpecialty'] ?? '',
+      imageUrl: json['profilePicUrl'] ?? '',
+    );
+  }
+}

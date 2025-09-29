@@ -1,4 +1,4 @@
-import 'package:flutter_clinic_app/models/appointments.dart';
+import 'package:flutter_clinic_app/models/appointment.dart';
 import 'package:flutter_clinic_app/tempDoctorList.dart';
 
 import 'models/bookings.dart';

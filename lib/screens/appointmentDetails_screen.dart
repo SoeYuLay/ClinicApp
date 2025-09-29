@@ -5,7 +5,7 @@
 // import 'package:iconsax/iconsax.dart';
 // import 'package:get/get.dart';
 // import 'package:intl/intl.dart';
-// import '../models/appointments.dart';
+// import '../models/appointment.dart';
 // import '../widgets/circularIconButton.dart';
 // import '../widgets/statusChip.dart';
 //

@@ -1,4 +1,5 @@
 import 'package:flutter_clinic_app/api/appointmentServices.dart';
+import 'package:flutter_clinic_app/models/appointment.dart';
 import 'package:get/get.dart';
 
 import '../api/auth_services.dart';
@@ -7,8 +8,10 @@ class AppointmentController extends GetxController{
   var isLoading = false.obs;
   var errorMessage = ''.obs;
   static String accessToken = '';
+  var appointmentsList = <Appointment>[].obs;
+  var appointmentResponse = <AppointmentResponse>[].obs;
 
-  Future<Map<String, dynamic>> makeAppointment({
+  Future<void> makeAppointment({
     required String doctorID,
     required String appointmentDate,
     required String appointmentSlot,
@@ -22,7 +25,6 @@ class AppointmentController extends GetxController{
     errorMessage.value = '';
 
     accessToken = await AuthService().getToken();
-    print(accessToken);
 
     final result = await AppointmentServices.makeAppointment(
         token: accessToken,
@@ -37,37 +39,19 @@ class AppointmentController extends GetxController{
     );
 
     isLoading.value = false;
+    appointmentResponse.assignAll(result);
 
-    final statusCode = result['statusCode'];
-    final body = result['body'];
-
-    if (statusCode == 200 || statusCode == 201 && body['success'] == true) {
-      return result;
-    } else {
-      errorMessage.value = result['message'] ?? "Make Appointment failed";
-      return result;
-    }
   }
 
-  // Future<Map<String, dynamic>> fetchAppointments() async {
-  //   isLoading.value = true;
-  //   errorMessage.value = '';
-  //
-  //   accessToken = await AuthService().getToken();
-  //   print(accessToken);
-  //
-  //   final result = await AppointmentServices.fetchAppointments(token: accessToken);
-  //
-  //   isLoading.value = false;
-  //
-  //   final statusCode = result['statusCode'];
-  //   final body = result['body'];
-  //
-  //   if (statusCode == 200 || statusCode == 201 && body['success'] == true) {
-  //     return result;
-  //   } else {
-  //     errorMessage.value = result['message'] ?? "Make Appointment failed";
-  //     return result;
-  //   }
-  // }
+  Future<void> fetchAppointments() async {
+    isLoading.value = true;
+    errorMessage.value = '';
+
+    accessToken = await AuthService().getToken();
+
+    final result = await AppointmentServices.fetchAppointments(token: accessToken);
+
+    isLoading.value = false;
+    appointmentsList.assignAll(result);
+  }
 }
