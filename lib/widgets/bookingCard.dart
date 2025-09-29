@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clinic_app/controllers/appointmentController.dart';
-import 'package:flutter_clinic_app/tempBookingList.dart';
 import 'package:flutter_clinic_app/utils/constants/app_colors.dart';
 import 'package:flutter_clinic_app/widgets/statusChip.dart';
 import 'package:iconsax/iconsax.dart';
@@ -30,9 +29,10 @@ class BookingCard extends StatelessWidget {
         label: Text(text,style: TextStyle(fontSize: 18,color: Colors.black)));
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final bookingList = TempBookingList().tempBookingList;
+    // final bookingList = TempBookingList().tempBookingList;
     return Obx((){
       if(controller.isLoading.value){
         return Center(child: CircularProgressIndicator());
@@ -41,8 +41,10 @@ class BookingCard extends StatelessWidget {
         return Center(child: Text("Error: ${controller.errorMessage}"));
       }
       if (controller.appointmentsList.isEmpty) {
+        print(controller.appointmentsList);
         return Center(child: Text("No data found"));
       }
+
       return SingleChildScrollView(
         child: ListView.separated(
             itemCount: controller.appointmentsList.length,

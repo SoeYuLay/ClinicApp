@@ -44,10 +44,6 @@ class AppointmentServices {
       }else{
         throw Exception("Failed with status: ${response.statusCode}");
       }
-      // return {
-      //   "statusCode": response.statusCode,
-      //   "body": data,
-      // };
     } catch (e) {
       throw Exception("Error fetching appointment: $e");
     }

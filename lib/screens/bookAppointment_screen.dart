@@ -623,7 +623,6 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
 
                           Get.to(() => AppointmentSuccessScreen(
                             doctorID: doctor.doctorID,
-                            // appointmentData: appointmentData,
                           ));
 
                       },

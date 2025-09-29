@@ -25,9 +25,14 @@ class Appointment{
   });
 
   factory Appointment.fromJson(Map<String, dynamic> json){
+    final appointmentDateStr = json['date'] ?? '';
+    final appointmentDate = appointmentDateStr.isNotEmpty
+        ? DateTime.parse(appointmentDateStr).add(const Duration(hours: 6, minutes: 30))
+        : DateTime.now();
+
     return Appointment(
         bookingID: json['id'] ?? '',
-        appointmentDate: json['date'] ?? '',
+        appointmentDate: appointmentDate,
         timeSlot: json['time'] ?? '',
         appointmentStatus: json['status'] ?? '',
         appointmentFor: json['appointmentFor'] ?? '',

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_clinic_app/controllers/appointmentController.dart';
 import 'package:flutter_clinic_app/utils/constants/app_colors.dart';
 import 'package:flutter_clinic_app/widgets/bookingCard.dart';
 import 'package:flutter_clinic_app/widgets/circularIconButton.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:get/get.dart';
 
 class BookingScreen extends StatefulWidget {
   const BookingScreen({super.key});
@@ -13,6 +15,14 @@ class BookingScreen extends StatefulWidget {
 
 class _BookingScreenState extends State<BookingScreen> {
   TextEditingController appointmentController = TextEditingController();
+  final controller = Get.put(AppointmentController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    controller.fetchAppointments();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +95,7 @@ class _BookingScreenState extends State<BookingScreen> {
               ],
             ),
           ),
-        ),
+        )
       )
     );
   }

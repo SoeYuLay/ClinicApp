@@ -10,19 +10,19 @@ class StatusChip extends StatelessWidget {
     Color color = Colors.black;
     Color bgColor = Colors.white;
     switch (status){
-      case 'Completed':
+      case 'COMPLETED':
         color = Colors.grey.shade800;
         bgColor = Colors.grey.shade100;
         break;
-      case 'Approved':
+      case 'APPROVED':
         color = Colors.green.shade800;
         bgColor = Colors.green.shade100;
         break;
-      case 'Pending Confirmation':
+      case 'PENDING':
         color = Colors.deepOrangeAccent.shade700;
         bgColor = Colors.deepOrangeAccent.shade100;
         break;
-      case 'Cancelled':
+      case 'CANCELLED':
         color = Colors.redAccent.shade700;
         bgColor = Colors.redAccent.shade100;
         break;
