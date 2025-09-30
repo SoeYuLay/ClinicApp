@@ -70,27 +70,24 @@ Widget _buildCardList(Map<IconData, String> items){
 
 Widget _buildCard({required IconData iconData, required String cate}) {
   return InkWell(
-    onTap: (){
+    onTap: () async {
       if (cate == 'About us'){
         Get.to(()=>AboutUsScreen());
       }else if (cate == 'Terms of use'){
         Get.to(()=>TermOfUseScreen());
       }else if (cate == 'Privacy policy'){
         Get.to(()=>PrivacyPolicyScreen());
+      }else if(cate == 'Logout') {
+        await AuthService().logout();
       }
     },
-    child: InkWell(
-      onTap: () async{
-        await AuthService().logout();
-      },
-      child: ListTile(
-          leading: Icon(
-            iconData,
-            size: 28,
-            color: cate == 'Logout' ? Colors.red : Colors.black,
-          ),
-          title: Text(cate,style: TextStyle(color: cate == 'Logout' ? Colors.red : Colors.black),),
-          trailing: Icon(Iconsax.arrow_right_3,color: cate == 'Logout' ? Colors.red : Colors.black,)),
-    ),
+    child: ListTile(
+        leading: Icon(
+          iconData,
+          size: 28,
+          color: cate == 'Logout' ? Colors.red : Colors.black,
+        ),
+        title: Text(cate,style: TextStyle(color: cate == 'Logout' ? Colors.red : Colors.black),),
+        trailing: Icon(Iconsax.arrow_right_3,color: cate == 'Logout' ? Colors.red : Colors.black,)),
   );
 }

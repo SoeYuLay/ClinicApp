@@ -29,6 +29,7 @@ class Appointment{
     final appointmentDate = appointmentDateStr.isNotEmpty
         ? DateTime.parse(appointmentDateStr).add(const Duration(hours: 6, minutes: 30))
         : DateTime.now();
+    print(json['type']);
 
     return Appointment(
         bookingID: json['id'] ?? '',
@@ -38,7 +39,7 @@ class Appointment{
         appointmentFor: json['appointmentFor'] ?? '',
         phoneNumber: json['phoneNumber'] ?? '',
         appointmentNote: json['note'] ?? '',
-        appointmentType: json['type'] == 'IN_PERSON' ? 'In Person' : 'Online',
+        appointmentType: json['type'] == 'ONLINE' ? 'Online' : 'In Person',
         doctor: AppointmentDoctor.fromJson(json['doctor'] ?? ''),
     );
   }
