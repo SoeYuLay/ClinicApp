@@ -9,11 +9,12 @@ class BestDoctorCard extends StatelessWidget {
   final bool isHomePage;
   final DoctorController controller = Get.put(DoctorController());
   final String? speciality;
+  final String? specialityID;
 
 
-  BestDoctorCard({Key? key, required this.isHomePage, this.speciality}) : super(key: key) {
+  BestDoctorCard({Key? key, required this.isHomePage, this.speciality, this.specialityID}) : super(key: key) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchDoctors(isHomePage: isHomePage);
+      speciality == null ? controller.fetchDoctors(isHomePage: isHomePage) : controller.fetchDoctorBySpeciality(specialityID: specialityID!);
     });
   }
   List<Doctor> filteredDoctors = [];
@@ -26,14 +27,15 @@ class BestDoctorCard extends StatelessWidget {
         return Center(child: CircularProgressIndicator());
       }
 
-      // Filter doctors by speciality
       if(isHomePage){
         filteredDoctors = speciality != null
-            ? controller.doctorsHomePage.where((d) => d.doctorSpeciality == speciality).toList()
+            ? controller.doctorsHomePage
+            // .where((d) => d.doctorSpeciality == speciality).toList()
             : controller.doctorsHomePage;
       }else{
         filteredDoctors = speciality != null
-            ? controller.allDoctors.where((d) => d.doctorSpeciality == speciality).toList()
+            ? controller.doctorBySpeciality
+            // .where((d) => d.doctorSpeciality == speciality).toList()
             : controller.allDoctors;
       }
 

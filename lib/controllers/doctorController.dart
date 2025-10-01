@@ -10,6 +10,7 @@ class DoctorController extends GetxController {
 
   var doctorsHomePage = <Doctor>[].obs;
   var allDoctors = <Doctor>[].obs;
+  var doctorBySpeciality = <Doctor>[].obs;
   var doctor = Rxn<Doctor>();
 
   // Pagination
@@ -68,6 +69,24 @@ class DoctorController extends GetxController {
       );
 
       doctor.value = result;
+
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchDoctorBySpeciality({required String specialityID}) async {
+    isLoading.value = true;
+    errorMessage.value = '';
+    try {
+      final result = await DoctorServices.fetchDoctorDataBySpeciality(
+        accessToken: await AuthService().getToken(),
+        specialityID : specialityID,
+      );
+
+      doctorBySpeciality.assignAll(result);
 
     } catch (e) {
       errorMessage.value = e.toString();

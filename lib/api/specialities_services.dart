@@ -5,13 +5,14 @@ import 'package:http/http.dart' as http;
 class SpecialitiesServices {
   static const String baseUrl = "https://clinic-bk-production.up.railway.app";
 
-  static Future<List<SpecialitiesModel>> specialities({required bool isHomePage}) async {
+  static Future<List<SpecialitiesModel>> specialities({required String accessToken, required bool isHomePage}) async {
     try {
       final url = isHomePage ? Uri.parse("$baseUrl/specialties?isHomePage=true") : Uri.parse("$baseUrl/specialties");
       final response = await http.get(url,
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
+          "Authorization": "Bearer $accessToken"
         },
       );
 

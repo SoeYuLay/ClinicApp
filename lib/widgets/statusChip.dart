@@ -14,7 +14,7 @@ class StatusChip extends StatelessWidget {
         color = Colors.grey.shade800;
         bgColor = Colors.grey.shade100;
         break;
-      case 'APPROVED':
+      case 'CONFIRMED':
         color = Colors.green.shade800;
         bgColor = Colors.green.shade100;
         break;

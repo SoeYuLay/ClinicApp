@@ -4,13 +4,27 @@ import 'package:get/get.dart';
 import '../controllers/specialitiesController.dart';
 
 
-class SearchSpecialitiesCard extends StatelessWidget {
+class SearchSpecialitiesCard extends StatefulWidget {
   SearchSpecialitiesCard({super.key});
-  final controller = Get.put(SpecialitiesController());
+
+  @override
+  State<SearchSpecialitiesCard> createState() => _SearchSpecialitiesCardState();
+}
+
+class _SearchSpecialitiesCardState extends State<SearchSpecialitiesCard> {
+  final SpecialitiesController controller = Get.put(SpecialitiesController());
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchSpecialities(isHomePage: false);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    controller.fetchSpecialities(isHomePage: false);
     return Obx(() {
       if (controller.isLoading.value) {
         return Center(child: CircularProgressIndicator());
@@ -30,15 +44,15 @@ class SearchSpecialitiesCard extends StatelessWidget {
         itemCount: controller.allSpecialities.length,
         itemBuilder: (context, index) {
           final speciality = controller.allSpecialities[index];
-          return buttons(speciality.specialitiesImage, speciality.specialitiesName);
+          return buttons(speciality.specialityID, speciality.specialityImage, speciality.specialityName);
         },
       );
     });
   }
 
-  Widget buttons(String imageName, String btnName) {
+  Widget buttons(String id, String imageName, String btnName) {
     return InkWell(
-      onTap: () => Get.to(() => DoctorsScreen(speciality: btnName)),
+      onTap: () => Get.to(() => DoctorsScreen(specialityID: id, speciality: btnName)),
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(

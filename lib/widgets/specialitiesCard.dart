@@ -7,10 +7,10 @@ class SpecialitiesCard extends StatelessWidget {
   SpecialitiesCard({super.key});
   final controller = Get.put(SpecialitiesController());
 
-  Widget buttons(String imageName, btnName){
+  Widget buttons(String id, String imageName, btnName){
 
     return InkWell(
-      onTap: () => Get.to(()=> DoctorsScreen(speciality: btnName)),
+      onTap: () => Get.to(()=> DoctorsScreen(specialityID: id, speciality: btnName)),
       child: Container(
         padding: EdgeInsets.all(15),
         decoration: BoxDecoration(
@@ -50,15 +50,17 @@ class SpecialitiesCard extends StatelessWidget {
     controller.fetchSpecialities(isHomePage: true);
 
     return Obx((){
-      // if(controller.isLoading.value){
-      //   return Center(child: CircularProgressIndicator());
-      // }
+      if(controller.isLoading.value){
+        return Center(child: CircularProgressIndicator());
+      }
       // if (controller.errorMessage.isNotEmpty) {
       //   return Center(child: Text("Error: ${controller.errorMessage}"));
       // }
-      // if (controller.specialities.isEmpty) {
-      //   return Center(child: Text("No data found"));
-      // }
+      final specialityHomePage = controller.specialitiesHomePage;
+
+      if (specialityHomePage.isEmpty) {
+        return Center(child: Text("No data found"));
+      }
       return GridView.builder(
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -71,7 +73,7 @@ class SpecialitiesCard extends StatelessWidget {
           itemCount: controller.specialitiesHomePage.length,
           itemBuilder: (context,index){
             final speciality = controller.specialitiesHomePage[index];
-            return buttons(speciality.specialitiesImage, speciality.specialitiesName);
+            return buttons(speciality.specialityID, speciality.specialityImage, speciality.specialityName);
           });
     }
     );
