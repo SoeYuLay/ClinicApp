@@ -38,7 +38,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://flutter.dev'));
+      ..loadRequest(Uri.parse('https://minthukyaw.vercel.app'));
   }
 
   @override
@@ -75,7 +75,11 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                 ],
               ),
               const SizedBox(height: 10,),
-              Expanded(child: WebViewWidget(controller: controller))
+              Expanded(
+                  child: WebViewWidget(
+                      key: UniqueKey(),
+                      controller: controller)
+              )
             ],
           ),
         ),
