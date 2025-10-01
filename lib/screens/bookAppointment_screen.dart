@@ -467,35 +467,42 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                               ),
                             ),
                             const SizedBox(height: 10),
-                            Text(
-                              'Full name',
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 1,
-                            ),
-                            const SizedBox(height: 10),
+                            Obx(() {
+                              if (controller.patientSelection.length > 1 && controller.patientSelection[1]) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Full name',
+                                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    TextField(
+                                      controller: patientNameController,
+                                      keyboardType: TextInputType.text,
+                                      decoration: InputDecoration(
+                                        hintText: 'Enter Patient\'s Full Name',
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey.shade300),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.black),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                  ],
+                                );
+                              } else {
+                                return SizedBox.shrink(); // return empty widget
+                              }
+                            }),
 
-                            TextField(
-                              controller: patientNameController,
-                              keyboardType: TextInputType.text,
-                              decoration: InputDecoration(
-                                hintText: 'Enter Patient\'s Full Name',
-                                border: OutlineInputBorder(
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(20))),
-                                enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color: Colors.grey
-                                          .shade300), // Enabled border color
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                      Colors.black), // Focused border color
-                                ),
-                              ),
-                            ),
                             const SizedBox(height: 10),
                             Text(
                               'Full name',
@@ -599,15 +606,6 @@ class _BookAppointmentScreenState extends State<BookAppointmentScreen> {
                       onPressed: appointmentController.isLoading.value
                           ? null
                           : () async {
-                          // print('doctorID: ${doctor.doctorID},');
-                          // print('appointmentDate: ${controller.selectedDate.value.toUtc().toIso8601String()},');
-                          // print('appointmentSlot: ${controller.selectedSlotKey.value}');
-                          // print('appointmentNote: ${noteController.text},');
-                          // print('appointmentFor: ${controller.patientSelection[0] ? 'SELF' : 'OTHER'}');
-                          // print('phoneNumber: $fullPhoneNumber, ');
-                          // print('newPatient: ${controller.newPatientCheck.value}');
-                          // print('PatientName: ${controller.patientSelection[0] ? null : patientNameController.text}');
-
                         await appointmentController.makeAppointment(
                             doctorID: doctor.doctorID,
                             appointmentDate: controller.selectedDate.value.toUtc().toIso8601String(),

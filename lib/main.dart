@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_clinic_app/controllers/bottomNavController.dart';
 import 'package:flutter_clinic_app/controllers/registerController.dart';
 import 'package:flutter_clinic_app/screens/login_screen.dart';
-import 'package:flutter_clinic_app/screens/onboarding_screen.dart';
 import 'package:get/get.dart';
 
 void main() {
