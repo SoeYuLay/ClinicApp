@@ -10,13 +10,26 @@ class BestDoctorCard extends StatelessWidget {
   final DoctorController controller = Get.put(DoctorController());
   final String? speciality;
   final String? specialityID;
+  final String? searchDoctor;
 
-
-  BestDoctorCard({Key? key, required this.isHomePage, this.speciality, this.specialityID}) : super(key: key) {
+  BestDoctorCard({
+    Key? key,
+    required this.isHomePage,
+    this.speciality,
+    this.specialityID,
+    this.searchDoctor,
+  }) : super(key: key) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      speciality == null ? controller.fetchDoctors(isHomePage: isHomePage) : controller.fetchDoctorBySpeciality(specialityID: specialityID!);
+      if (searchDoctor != null && searchDoctor!.isNotEmpty) {
+        controller.fetchDoctorBySearch(doctorName: searchDoctor!);
+      } else if (speciality != null && specialityID != null) {
+        controller.fetchDoctorBySpeciality(specialityID: specialityID!);
+      } else {
+        controller.fetchDoctors(isHomePage: isHomePage);
+      }
     });
   }
+
   List<Doctor> filteredDoctors = [];
 
   @override
@@ -28,15 +41,18 @@ class BestDoctorCard extends StatelessWidget {
       }
 
       if(isHomePage){
-        filteredDoctors = speciality != null
-            ? controller.doctorsHomePage
-            // .where((d) => d.doctorSpeciality == speciality).toList()
-            : controller.doctorsHomePage;
+        // filteredDoctors = speciality != null
+        //     ? controller.doctorsHomePage
+        //     // .where((d) => d.doctorSpeciality == speciality).toList()
+        //     : controller.doctorsHomePage;
+        filteredDoctors = controller.doctorsHomePage;
+      }else if (speciality != null){
+        filteredDoctors = controller.doctorBySpeciality;
+      }else if(searchDoctor != null){
+        print('SearchDoctor: $searchDoctor');
+        filteredDoctors = controller.searchDoctorList;
       }else{
-        filteredDoctors = speciality != null
-            ? controller.doctorBySpeciality
-            // .where((d) => d.doctorSpeciality == speciality).toList()
-            : controller.allDoctors;
+        filteredDoctors = controller.allDoctors;
       }
 
       if (filteredDoctors.isEmpty) {

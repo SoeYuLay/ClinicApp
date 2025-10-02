@@ -6,9 +6,10 @@ import '../../utils/constants/app_colors.dart';
 import '../../widgets/circularIconButton.dart';
 
 class DoctorsScreen extends StatelessWidget {
-  DoctorsScreen({super.key, this.speciality, this.specialityID});
+  DoctorsScreen({super.key, this.speciality, this.specialityID, this.searchDoctor});
   final String? speciality;
   final String? specialityID;
+  final String? searchDoctor;
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,21 @@ class DoctorsScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 10),
-                speciality != null ? BestDoctorCard(specialityID: specialityID, speciality: speciality, isHomePage: false) : BestDoctorCard(isHomePage: false,)
+                // speciality != null ? BestDoctorCard(specialityID: specialityID, speciality: speciality, isHomePage: false) : BestDoctorCard(isHomePage: false,)
+                speciality != null
+                    ? BestDoctorCard(
+                  specialityID: specialityID,
+                  speciality: speciality,
+                  isHomePage: false,
+                )
+                    : (searchDoctor != null && searchDoctor!.isNotEmpty
+                    ? BestDoctorCard(
+                  searchDoctor: searchDoctor,
+                  isHomePage: false,
+                )
+                    : BestDoctorCard(
+                  isHomePage: false,
+                )),
               ],
             ),
           ),
