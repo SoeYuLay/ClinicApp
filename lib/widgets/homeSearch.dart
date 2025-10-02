@@ -26,15 +26,22 @@ class _HomeSearchState extends State<HomeSearch> {
     super.initState();
     selectedDate = DateTime.now();
     formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate!);
-
   }
 
   Future<void> selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
+      firstDate: DateTime(
+        DateTime.now().year - 1,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
+      lastDate: DateTime(
+        DateTime.now().year + 1,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
     );
     if (pickedDate != null && pickedDate != selectedDate) {
       setState(() {
@@ -110,7 +117,7 @@ class _HomeSearchState extends State<HomeSearch> {
                     icon: Icon(Iconsax.calendar_1),),
                   InkWell(
                     child: Text(
-                        '$formattedDate',
+                        formattedDate ?? 'Select Date',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: Color(0xFF000000))
                     ),
@@ -130,7 +137,7 @@ class _HomeSearchState extends State<HomeSearch> {
                   foregroundColor: AppColor.bgColor,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                 ),
-                onPressed: () => Get.to(()=> DoctorsScreen(searchDoctor: searchDoctorController.text,)),
+                onPressed: () => Get.to(()=> DoctorsScreen(searchDoctor: searchDoctorController.text ?? '',searchDate: formattedDate,)),
 
                 child: const Text('Find Results', style: TextStyle(fontSize: 18)),
               ),

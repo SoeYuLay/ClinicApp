@@ -96,13 +96,14 @@ class DoctorController extends GetxController {
     }
   }
 
-  Future<void> fetchDoctorBySearch({required String doctorName}) async {
+  Future<void> fetchDoctorBySearch({required String doctorName, required String date}) async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
       final result = await DoctorServices.fetchDoctorDataBySearch(
         accessToken: await AuthService().getToken(),
         doctorName : doctorName,
+        date: date,
       );
 
       searchDoctorList.assignAll(result);

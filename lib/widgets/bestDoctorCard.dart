@@ -11,17 +11,18 @@ class BestDoctorCard extends StatelessWidget {
   final String? speciality;
   final String? specialityID;
   final String? searchDoctor;
+  final String? searchDate;
 
   BestDoctorCard({
     Key? key,
     required this.isHomePage,
     this.speciality,
     this.specialityID,
-    this.searchDoctor,
+    this.searchDoctor, this.searchDate,
   }) : super(key: key) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (searchDoctor != null && searchDoctor!.isNotEmpty) {
-        controller.fetchDoctorBySearch(doctorName: searchDoctor!);
+      if (searchDate!=null) {
+        controller.fetchDoctorBySearch(doctorName: searchDoctor!, date: searchDate!);
       } else if (speciality != null && specialityID != null) {
         controller.fetchDoctorBySpeciality(specialityID: specialityID!);
       } else {

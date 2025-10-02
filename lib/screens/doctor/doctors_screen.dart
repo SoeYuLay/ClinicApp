@@ -6,10 +6,11 @@ import '../../utils/constants/app_colors.dart';
 import '../../widgets/circularIconButton.dart';
 
 class DoctorsScreen extends StatelessWidget {
-  DoctorsScreen({super.key, this.speciality, this.specialityID, this.searchDoctor});
+  DoctorsScreen({super.key, this.speciality, this.specialityID, this.searchDoctor, this.searchDate});
   final String? speciality;
   final String? specialityID;
   final String? searchDoctor;
+  final String? searchDate;
 
   @override
   Widget build(BuildContext context) {
@@ -62,14 +63,17 @@ class DoctorsScreen extends StatelessWidget {
                   speciality: speciality,
                   isHomePage: false,
                 )
-                    : (searchDoctor != null && searchDoctor!.isNotEmpty
+                    : (searchDate != null
                     ? BestDoctorCard(
                   searchDoctor: searchDoctor,
+                  searchDate: searchDate,
                   isHomePage: false,
                 )
                     : BestDoctorCard(
                   isHomePage: false,
                 )),
+
+
               ],
             ),
           ),

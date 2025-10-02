@@ -95,11 +95,13 @@ class DoctorServices {
 
   static Future<List<Doctor>> fetchDoctorDataBySearch({
     required String accessToken,
-    required String doctorName
+    required String doctorName,
+    required String date
   }) async {
     try {
+      final url = doctorName == '' ? "$baseUrl/doctors?date=$date" : "$baseUrl/doctors?name=$doctorName&date=$date";
       final response = await http.get(
-        Uri.parse("$baseUrl/doctors?name=$doctorName"),
+        Uri.parse(url),
         headers: {
           "Content-Type": "application/json",
           "Accept": "application/json",
