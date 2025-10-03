@@ -9,9 +9,8 @@ import '../tempDoctorList.dart';
 import 'circularIconButton.dart';
 
 class MyDoctorListCard extends StatefulWidget {
-  const MyDoctorListCard({super.key, required this.isSaved});
+  const MyDoctorListCard({super.key});
 
-  final bool isSaved;
 
   @override
   State<MyDoctorListCard> createState() => _MyDoctorListCardState();
@@ -26,7 +25,16 @@ class _MyDoctorListCardState extends State<MyDoctorListCard> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchFavoriteDoctor();
+      // Listen to changes in isSaved
+      ever(controller.isSaved, (saved) {
+        if (saved) {
+          controller.fetchFavoriteDoctor();
+        } else {
+          controller.fetchBookedDoctor();
+        }
+      });
+
+      controller.isSaved.value ? controller.fetchFavoriteDoctor() : controller.fetchBookedDoctor();
     });
   }
 
@@ -41,7 +49,7 @@ class _MyDoctorListCardState extends State<MyDoctorListCard> {
         return Center(child: Text("Error: ${controller.errorMessage}"));
       }
 
-      if (widget.isSaved){
+      if (controller.isSaved.value){
         filteredDoctors = controller.favoriteDoctorList;
       }else{
         filteredDoctors = controller.savedDoctorList;
@@ -83,7 +91,7 @@ class _MyDoctorListCardState extends State<MyDoctorListCard> {
                               child: Image.network(doctor.doctorImage,
                                   width: double.infinity, height: 180),
                             ),
-                            if (widget.isSaved)
+                            if (controller.isSaved.value)
                               Positioned(
                                 right: 10,
                                 child: CircularIconButton(
@@ -128,7 +136,7 @@ class _MyDoctorListCardState extends State<MyDoctorListCard> {
                                   color: Colors.black),
                               const SizedBox(width: 10),
                               Text(
-                                '10 total appointments made',
+                                '${doctor.totalAppointment} total appointments made',
                                 style: TextStyle(fontSize: 16),
                               )
                             ],
@@ -148,7 +156,7 @@ class _MyDoctorListCardState extends State<MyDoctorListCard> {
                           onPressed: () {
                             // Get.to(()=>DoctorDetailScreen(doctor: doctor))
                           },
-                          child: Text(widget.isSaved ? 'Book Now' : 'Book Again',
+                          child: Text(controller.isSaved.value ? 'Book Now' : 'Book Again',
                               style: TextStyle(
                                   fontSize: 18, color: AppColor.bgColor)),
                         )

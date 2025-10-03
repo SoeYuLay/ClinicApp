@@ -11,6 +11,7 @@ class Doctor{
   final List<DoctorAvailabilityModel> doctorAvailability;
   final int doctorExperience;
   final bool isFavorite;
+  final int totalAppointment;
 
   Doctor({
     required this.doctorID,
@@ -22,7 +23,8 @@ class Doctor{
     required this.doctorAbout,
     required this.doctorAvailability,
     required this.doctorExperience,
-    required this.isFavorite
+    required this.isFavorite,
+    required this.totalAppointment
 } );
 
   factory Doctor.fromJson(Map<String, dynamic> json){
@@ -50,7 +52,8 @@ class Doctor{
         doctorAbout: json['about'] ?? '',
         doctorAvailability: availability,
         doctorExperience: json['experience'] ?? 0,
-        isFavorite: json['isFavorite'] ?? false
+        isFavorite: json['isFavorite'] ?? false,
+        totalAppointment: json['totalAppointments'] ?? 0
     );
   }
 

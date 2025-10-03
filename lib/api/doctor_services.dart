@@ -148,4 +148,30 @@ class DoctorServices {
     }
   }
 
+  static Future<List<Doctor>> fetchBookedDoctor({
+    required String accessToken
+  }) async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/doctors?bookedOnly=true"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $accessToken"
+        },
+      );
+
+      if (response.statusCode == 200){
+        final decoded = jsonDecode(response.body);
+        final List<dynamic> data = decoded['data']['data'];
+        return data.map((json) => Doctor.fromJson(json)).toList();
+      }else{
+        throw Exception("Failed with status: ${response.statusCode}");
+      }
+    }
+    catch (e) {
+      throw Exception("Error fetching specialties: $e");
+    }
+  }
+
 }

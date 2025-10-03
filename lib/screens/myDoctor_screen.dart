@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_clinic_app/widgets/myDoctorListCard.dart';
+import 'package:get/get.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
+import '../controllers/doctorController.dart';
 import '../utils/constants/app_colors.dart';
 
 class MyDoctorScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class MyDoctorScreen extends StatefulWidget {
 }
 
 class _MyDoctorScreenState extends State<MyDoctorScreen> {
-  bool isSaved = true;
+  final controller = Get.put(DoctorController());
 
   @override
   Widget build(BuildContext context) {
@@ -53,22 +55,23 @@ class _MyDoctorScreenState extends State<MyDoctorScreen> {
                             border: Border.all(color: Colors.grey.shade300),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: ToggleSwitch(
-                            minWidth: double.infinity,
-                            cornerRadius: 20.0,
-                            activeBgColor: [Colors.white],
-                            activeFgColor: Colors.black,
-                            inactiveBgColor: Colors.grey.shade300,
-                            inactiveFgColor: Colors.grey.shade800,
-                            initialLabelIndex: isSaved ? 1 : 0,
-                            totalSwitches: 2,
-                            labels: ['Booked', 'Saved'],
-                            radiusStyle: true,
-                            onToggle: (index) {
-                              setState(() {
-                                isSaved = (index == 1);
-                              });
-                            },
+                          child: Obx((){
+                            return ToggleSwitch(
+                              minWidth: double.infinity,
+                              cornerRadius: 20.0,
+                              activeBgColor: [Colors.white],
+                              activeFgColor: Colors.black,
+                              inactiveBgColor: Colors.grey.shade300,
+                              inactiveFgColor: Colors.grey.shade800,
+                              initialLabelIndex: controller.isSaved.value ? 1 : 0,
+                              totalSwitches: 2,
+                              labels: ['Booked', 'Saved'],
+                              radiusStyle: true,
+                              onToggle: (index) {
+                                controller.isSaved.value = (index==1);
+                              },
+                            );
+                          }
                           ),
                         ),
                       ],
@@ -76,7 +79,7 @@ class _MyDoctorScreenState extends State<MyDoctorScreen> {
                   ),
                 ),
                 const SizedBox(height: 10),
-                MyDoctorListCard(isSaved: isSaved)
+                MyDoctorListCard()
               ],
             ),
           ),
