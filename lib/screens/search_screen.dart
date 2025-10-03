@@ -42,26 +42,26 @@ class SearchScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 15),
-                TextField(
-                  controller: searchDoctorController,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: 'Search doctor, condition',
-                    prefixIcon: Icon(Iconsax.search_normal_1),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.grey.shade300), // Enabled border color
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.black), // Focused border color
-                    ),
-                  ),
-                  onTap: (){
-                    Get.to(()=>SearchScreen());
-                  },
-                ),
-                const SizedBox(height: 15),
-                Divider(),
-                RecentSearches(),
+                // TextField(
+                //   controller: searchDoctorController,
+                //   keyboardType: TextInputType.text,
+                //   decoration: InputDecoration(
+                //     hintText: 'Search doctor, condition',
+                //     prefixIcon: Icon(Iconsax.search_normal_1),
+                //     enabledBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.grey.shade300), // Enabled border color
+                //     ),
+                //     focusedBorder: OutlineInputBorder(
+                //       borderSide: BorderSide(color: Colors.black), // Focused border color
+                //     ),
+                //   ),
+                //   onTap: (){
+                //     Get.to(()=>SearchScreen());
+                //   },
+                // ),
+
+                // Divider(),
+                // RecentSearches(),
                 const SizedBox(height: 15),
                 Text('By specialists',
                   style: TextStyle(

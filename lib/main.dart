@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clinic_app/controllers/bottomNavController.dart';
 import 'package:flutter_clinic_app/controllers/registerController.dart';
 import 'package:flutter_clinic_app/screens/login_screen.dart';
+import 'package:flutter_clinic_app/screens/onboarding_screen.dart';
 import 'package:get/get.dart';
 
 void main() {
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: BottomNavController()
+      home: LoginScreen()
     );
   }
 }

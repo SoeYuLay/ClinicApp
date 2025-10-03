@@ -55,7 +55,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     return Row(
                       children: [
                         CircleAvatar(
-                          backgroundImage: NetworkImage(image!),
+                          backgroundImage: image != null && image.isNotEmpty
+                              ? NetworkImage(image)
+                              : const AssetImage("assets/images/avatar.jpg") as ImageProvider,
                           radius: 28,
                         ),
                         const SizedBox(width: 10),
