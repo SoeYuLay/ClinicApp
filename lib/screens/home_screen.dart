@@ -11,6 +11,8 @@ import 'package:iconsax/iconsax.dart';
 import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
+import '../controllers/profileController.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -20,8 +22,18 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController selectLocationController = TextEditingController();
-  List<String> location = ['Yangon','Mandalay','Nay Pyi Taw','Pyin Oo Lwin','Sagaing','Taung Gyi',
-    'Kalaw','Pathein','Mawlamyine','Myeik','Dawei'];
+  final controller = Get.put(ProfileController());
+  // List<String> location = ['Yangon','Mandalay','Nay Pyi Taw','Pyin Oo Lwin','Sagaing','Taung Gyi',
+  //   'Kalaw','Pathein','Mawlamyine','Myeik','Dawei'];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchUserData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,44 +54,31 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 200,
-                        decoration: BoxDecoration(
-                            color: AppColor.bgColor,
-                            borderRadius: BorderRadius.circular(30)
+                  Obx((){
+                    final image = controller.userDetail.value?.profilePic;
+                    return Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: NetworkImage(image!),
+                          radius: 28,
                         ),
-                        child: DropdownButtonFormField<String>(
-                          iconEnabledColor: Colors.black,
-                          iconDisabledColor: Colors.black,
-                          style: TextStyle(color: Colors.black,fontSize: 15),
-                          icon: Icon(Iconsax.arrow_down_14),
-                          decoration: InputDecoration(
-                            prefixIcon: Icon(Iconsax.location),
-                            hintText: 'Yangon',
-                            border: OutlineInputBorder(
-                                borderSide: BorderSide.none
-                            ),
+                        const SizedBox(width: 10),
+                        Text('Welcome, ${controller.userDetail.value?.firstName}',
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold
                           ),
-                          items: location.map((city){
-                            return DropdownMenuItem(
-                                value: city,
-                                child: Text(city));
-                          }).toList(),
-
-                          onChanged: (value) {},
                         ),
-                      ),
 
-                      Spacer(),
+                        Spacer(),
 
-                      CircularIconButton(
+                        CircularIconButton(
                           icon: Icon(Iconsax.notification,color: Colors.black),
                           onPressed: (){},
-                        borderColor: AppColor.bgColor,)
-                    ],
-                  ),
+                          borderColor: AppColor.bgColor,)
+                      ],
+                    );
+                  }),
                   const SizedBox(height: 10),
                   HomeSearch(),
                   const SizedBox(height: 10),
@@ -149,3 +148,32 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
+
+
+// Container(
+//   width: 200,
+//   decoration: BoxDecoration(
+//       color: AppColor.bgColor,
+//       borderRadius: BorderRadius.circular(30)
+//   ),
+//   child: DropdownButtonFormField<String>(
+//     iconEnabledColor: Colors.black,
+//     iconDisabledColor: Colors.black,
+//     style: TextStyle(color: Colors.black,fontSize: 15),
+//     icon: Icon(Iconsax.arrow_down_14),
+//     decoration: InputDecoration(
+//       prefixIcon: Icon(Iconsax.location),
+//       hintText: 'Yangon',
+//       border: OutlineInputBorder(
+//           borderSide: BorderSide.none
+//       ),
+//     ),
+//     items: location.map((city){
+//       return DropdownMenuItem(
+//           value: city,
+//           child: Text(city));
+//     }).toList(),
+//
+//     onChanged: (value) {},
+//   ),
+// ),

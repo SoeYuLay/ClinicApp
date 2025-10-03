@@ -200,7 +200,7 @@ class DoctorController extends GetxController {
       result = await markAsFav(current.doctorID);
     }
 
-    if (result || current.isFavorite) {
+    if (result) {
       doctor.update((d) {
         if (d != null) d.isFavorite = !d.isFavorite;
       });

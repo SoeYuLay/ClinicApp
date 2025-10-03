@@ -154,7 +154,7 @@ class _MyDoctorListCardState extends State<MyDoctorListCard> {
                                   borderRadius: BorderRadius.all(
                                       Radius.circular(40)))),
                           onPressed: () {
-                            // Get.to(()=>DoctorDetailScreen(doctor: doctor))
+                            Get.to(()=>DoctorDetailScreen(doctorID: doctor.doctorID));
                           },
                           child: Text(controller.isSaved.value ? 'Book Now' : 'Book Again',
                               style: TextStyle(
