@@ -72,10 +72,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                         Spacer(),
 
-                        CircularIconButton(
-                          icon: Icon(Iconsax.notification,color: Colors.black),
-                          onPressed: (){},
-                          borderColor: AppColor.bgColor,)
+                        // CircularIconButton(
+                        //   icon: Icon(Iconsax.notification,color: Colors.black),
+                        //   onPressed: (){},
+                        //   borderColor: AppColor.bgColor,)
                       ],
                     );
                   }),

@@ -104,7 +104,7 @@ class DoctorController extends GetxController {
     isLoading.value = true;
     errorMessage.value = '';
     try {
-      final result = await DoctorServices.fetchDoctorDataBySearch(
+      final result = await DoctorServices.fetchDoctorBySearch(
         accessToken: await AuthService().getToken(),
         doctorName : doctorName,
         date: date,

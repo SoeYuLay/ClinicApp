@@ -137,7 +137,9 @@ class _HomeSearchState extends State<HomeSearch> {
                   foregroundColor: AppColor.bgColor,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
                 ),
-                onPressed: () => Get.to(()=> DoctorsScreen(searchDoctor: searchDoctorController.text ?? '',searchDate: formattedDate,)),
+                onPressed: () {
+                  Get.to(()=> DoctorsScreen(searchDoctor: searchDoctorController.text ?? '',searchDate: formattedDate,));
+                },
 
                 child: const Text('Find Results', style: TextStyle(fontSize: 18)),
               ),

@@ -93,13 +93,13 @@ class DoctorServices {
     }
   }
 
-  static Future<List<Doctor>> fetchDoctorDataBySearch({
+  static Future<List<Doctor>> fetchDoctorBySearch({
     required String accessToken,
     required String doctorName,
     required String date
   }) async {
     try {
-      final url = doctorName == '' ? "$baseUrl/doctors?date=$date" : "$baseUrl/doctors?name=$doctorName&date=$date";
+      final url = doctorName == '' ? "$baseUrl/doctors?date=$date" : "$baseUrl/doctors?name=$doctorName";
       final response = await http.get(
         Uri.parse(url),
         headers: {
