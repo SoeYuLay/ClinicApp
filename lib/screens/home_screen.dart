@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_clinic_app/controllers/specialitiesController.dart';
 import 'package:flutter_clinic_app/screens/doctor/doctors_screen.dart';
 import 'package:flutter_clinic_app/screens/search_screen.dart';
 import 'package:flutter_clinic_app/utils/constants/app_colors.dart';
 import 'package:flutter_clinic_app/widgets/bestDoctorCard.dart';
-import 'package:flutter_clinic_app/widgets/circularIconButton.dart';
 import 'package:flutter_clinic_app/widgets/homeSearch.dart';
 import 'package:flutter_clinic_app/widgets/specialitiesCard.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:intl/intl.dart';
 import 'package:get/get.dart';
 
 import '../controllers/profileController.dart';
