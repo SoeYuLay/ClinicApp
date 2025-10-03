@@ -174,4 +174,55 @@ class DoctorServices {
     }
   }
 
+  static Future<bool> markAsFav({
+    required String accessToken,
+    required String doctorID
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse("$baseUrl/doctors/$doctorID/favorite"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $accessToken"
+        },
+      );
+
+      if (response.statusCode == 201) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    catch (e) {
+      throw Exception("Error fetching specialties: $e");
+    }
+  }
+
+  static Future<bool> unmarkFromFav({
+    required String accessToken,
+    required String doctorID
+  }) async {
+    try {
+      final response = await http.delete(
+        Uri.parse("$baseUrl/doctors/$doctorID/favorite"),
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer $accessToken"
+        },
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    catch (e) {
+      throw Exception("Error fetching specialties: $e");
+    }
+  }
 }
+
+

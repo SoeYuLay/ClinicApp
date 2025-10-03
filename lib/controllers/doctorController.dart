@@ -74,6 +74,7 @@ class DoctorController extends GetxController {
 
       doctor.value = result;
 
+
     } catch (e) {
       errorMessage.value = e.toString();
     } finally {
@@ -152,6 +153,63 @@ class DoctorController extends GetxController {
     }
   }
 
+  Future<bool> markAsFav(String doctorID) async {
+    isLoading.value = true;
+    errorMessage.value = '';
+    try {
+      final result = await DoctorServices.markAsFav(
+          accessToken: await AuthService().getToken(),
+          doctorID: doctorID);
+      return result;
+    } catch (e) {
+      errorMessage.value = e.toString();
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<bool> unmarkFromFav(String doctorID) async {
+    isLoading.value = true;
+    errorMessage.value = '';
+    try {
+      final result = await DoctorServices.unmarkFromFav(
+        accessToken: await AuthService().getToken(),
+        doctorID: doctorID,
+      );
+
+      return result;
+    } catch (e) {
+      errorMessage.value = e.toString();
+      return false;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+
+  void toggleFavorite() async {
+    if (doctor.value == null) return;
+
+    final current = doctor.value!;
+    bool result = false;
+
+    if (current.isFavorite) {
+      result = await unmarkFromFav(current.doctorID);
+    } else {
+      result = await markAsFav(current.doctorID);
+    }
+
+    if (result || current.isFavorite) {
+      doctor.update((d) {
+        if (d != null) d.isFavorite = !d.isFavorite;
+      });
+    } else {
+      Get.snackbar("Error", "Failed to update favorite status");
+    }
+
+  }
+
   void updatePatientSelection(int index) {
     for (int i = 0; i < patientSelection.length; i++) {
       patientSelection[i] = i == index;
@@ -180,55 +238,3 @@ class DoctorController extends GetxController {
   // }
 }
 
-
-//For Future Builder
-// Future<List<Doctor>> fetchDoctorsHomePage({required bool isHomePage}) async {
-//   try {
-//     final response = await DoctorServices.fetchDoctorData(token: accessToken, isHomePage: isHomePage);
-//
-//     return response;
-//   } catch (e) {
-//     throw Exception("Failed to fetch doctors: $e");
-//   }
-// }
-//
-// Future<List<Doctor>> fetchAllDoctors({
-//   required bool isHomePage,
-// }) async {
-//   final result = await DoctorServices.fetchDoctorData(
-//     token: accessToken,
-//     isHomePage: isHomePage,
-//     page: page,
-//     pageSize: pageSize,
-//   );
-//
-//   hasMore.value = result.length == pageSize;
-//
-//   // Append new doctors
-//   if (page == 1) {
-//     doctors.value = result; // reset on first page
-//   } else {
-//     doctors.addAll(result);
-//   }
-//
-//   return doctors;
-// }
-//
-// void loadMore(bool isHomePage) {
-//   if (!hasMore.value) return;
-//   page++;
-//   fetchAllDoctors(isHomePage: isHomePage);
-// }
-//
-// void resetAndFetch(bool isHomePage) {
-//   page= 1;
-//   hasMore.value = true;
-//   fetchAllDoctors(isHomePage: isHomePage);
-// }
-//
-//
-// Future<Doctor> fetchDoctorByID(String doctorID) async {
-//   await Future.delayed(Duration(seconds: 1));
-//   final doctors = await DoctorServices.fetchDoctorDataByID(accessToken: accessToken, doctorID: doctorID);
-//   return doctors;
-// }

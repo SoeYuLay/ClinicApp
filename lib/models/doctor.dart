@@ -10,7 +10,7 @@ class Doctor{
   final String doctorAbout;
   final List<DoctorAvailabilityModel> doctorAvailability;
   final int doctorExperience;
-  final bool isFavorite;
+  bool isFavorite;
   final int totalAppointment;
 
   Doctor({
