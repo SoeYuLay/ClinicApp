@@ -12,6 +12,8 @@ class DoctorController extends GetxController {
   var allDoctors = <Doctor>[].obs;
   var doctorBySpeciality = <Doctor>[].obs;
   var searchDoctorList = <Doctor>[].obs;
+  var favoriteDoctorList = <Doctor>[].obs;
+  var savedDoctorList = <Doctor>[].obs;
   var doctor = Rxn<Doctor>();
 
   // Pagination
@@ -107,6 +109,23 @@ class DoctorController extends GetxController {
       );
 
       searchDoctorList.assignAll(result);
+
+    } catch (e) {
+      errorMessage.value = e.toString();
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> fetchFavoriteDoctor() async {
+    isLoading.value = true;
+    errorMessage.value = '';
+    try {
+      final result = await DoctorServices.fetchFavoriteDoctor(
+        accessToken: await AuthService().getToken(),
+      );
+
+      favoriteDoctorList.assignAll(result);
 
     } catch (e) {
       errorMessage.value = e.toString();

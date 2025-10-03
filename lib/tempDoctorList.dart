@@ -120,7 +120,7 @@ class TempDoctorList{
               ]
           ),
         ],
-        doctorExperience: 12, doctorID: '1', doctorAbout: 'hi'),
+        doctorExperience: 12, doctorID: '1', doctorAbout: 'hi', isFavorite: false),
     Doctor(
         doctorName: 'Dr.Alan Smith',
         doctorSpeciality: 'Dermatology',
@@ -210,7 +210,7 @@ class TempDoctorList{
               ]
           ),
         ],
-        doctorExperience: 10, doctorID: '1', doctorAbout: 'hi'),
+        doctorExperience: 10, doctorID: '1', doctorAbout: 'hi', isFavorite: true),
     Doctor(
         doctorName: 'Dr.Aditya Pratama',
         doctorSpeciality: 'Neurology',
@@ -327,6 +327,6 @@ class TempDoctorList{
               ]
           ),
         ],
-        doctorExperience: 15, doctorID: '2', doctorAbout: 'hi'),
+        doctorExperience: 15, doctorID: '2', doctorAbout: 'hi', isFavorite: false),
   ];
 }
